@@ -1,0 +1,98 @@
+{
+  "extraction_timestamp_utc": "2026-10-18T16:35:27.405019+00:00",
+  "software_environment": {
+    "python_version": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+    "pandas_version": "3.0.6",
+    "numpy_version": "2.5.4",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "config": {
+    "patient_cap": 2500,
+    "min_creatinine_obs": 3,
+    "anchor_itemid": 50912,
+    "chunk_size": 250000,
+    "target_item_ids": {
+      "creatinine": 50912,
+      "urea_nitrogen": 51006,
+      "potassium": 50971,
+      "sodium": 50983,
+      "bicarbonate": 50882,
+      "glucose": 50931
+    }
+  },
+  "provenance": {
+    "labevents": {
+      "exists": true,
+      "path": "data/raw/labevents.csv",
+      "size_bytes": 18402851720,
+      "size_gb": 17.139,
+      "modified_utc": "2026-03-26T04:33:14+00:00",
+      "sha256_prefix": "1f169fb5ea8493fbd8f6018f1c11f101f2ae9f25711ec18860957b3d305fdcf2",
+      "is_partial_hash": true
+    },
+    "patients": {
+      "exists": true,
+      "path": "data/raw/patients.csv",
+      "size_bytes": 12051137,
+      "size_gb": 0.011,
+      "modified_utc": "2026-03-26T04:44:48+00:00",
+      "sha256_prefix": "c9b55bdfca377a93e37eb2662690f540c948d84d5f9b5847b3c867b3d8c8e535",
+      "is_partial_hash": true
+    },
+    "admissions": {
+      "exists": true,
+      "path": "data/raw/admissions.csv",
+      "size_bytes": 94156458,
+      "size_gb": 0.088,
+      "modified_utc": "2026-03-26T04:20:24+00:00",
+      "sha256_prefix": "aa80a4cbcdd856e7ee78bf9d050e89725ef654d13cd2ca7f94b375968babe938",
+      "is_partial_hash": true
+    },
+    "d_labitems": {
+      "exists": true,
+      "path": "data/raw/d_labitems.csv",
+      "size_bytes": 64663,
+      "size_gb": 0.0,
+      "modified_utc": "2026-03-26T04:20:50+00:00",
+      "sha256": "f3182dbace857d8cd3439ebbd2095d3128c1751cb42b12e3e4208bdc4b363567",
+      "is_partial_hash": false
+    }
+  },
+  "cohort_metrics": {
+    "total_patients": 2500,
+    "total_lab_observations": 303460,
+    "patient_id_range": {
+      "min": 10000032,
+      "max": 10138195
+    },
+    "age_distribution": {
+      "mean": 58.8,
+      "median": 61.0,
+      "min": 18,
+      "max": 91
+    },
+    "gender_distribution": {
+      "F": 1287,
+      "M": 1213
+    },
+    "admission_metrics": {
+      "patients_with_admissions": 2275,
+      "patients_outpatient_only": 225,
+      "total_inpatient_admissions": 6190,
+      "null_hadm_id_lab_rows": 103354,
+      "null_hadm_id_pct": 34.06
+    },
+    "duplicate_metrics": {
+      "exact_duplicates": 188,
+      "conflicting_measurements": 268
+    },
+    "unit_metrics": {
+      "standard_unit_count": 303460,
+      "converted_unit_count": 0,
+      "missing_uom_count": 0,
+      "unknown_unit_count": 0,
+      "total_harmonized_rows": 303460
+    },
+    "pipeline_runtime": 35.829161
+  }
+}

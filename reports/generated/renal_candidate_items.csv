@@ -1,0 +1,136 @@
+itemid,label,fluid,category,search_keyword,category_group,selection_reason,scanned_row_count,scanned_valuenum_missing_pct,scanned_units,scanned_min_value,scanned_max_value,scanned_mean_value
+50835,"Albumin, Ascites",Ascites,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,8448,27.19,g/dL:8448,0.1,403.0,1.366
+50862,Albumin,Blood,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,1032456,0.02,g/dL:1032456,0.2,36.0,3.754
+51019,"Albumin, Joint Fluid",Joint Fluid,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,9,11.11,g/dL:9,1.5,3.5,2.513
+51025,"Albumin, Body Fluid",Other Body Fluid,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,827,8.1,g/dL:827,0.0,5.0,2.605
+51046,"Albumin, Pleural",Pleural,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,6302,7.97,g/dL:6302,0.2,3800.0,2.531
+51069,"Albumin, Urine",Urine,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,73957,16.59,mg/dL:73957,0.0,3629.0,26.349
+51775,(Albumin),Cerebrospinal Fluid,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+51776,<Albumin>,Cerebrospinal Fluid,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,38,10.53,mg/dL:38,0.0,643.3,52.209
+51777,"Albumin, CSF",Cerebrospinal Fluid,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+51807,(Albumin),Joint Fluid,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+51836,<Albumin>,Other Body Fluid,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+51897,Surfactant/Albumin,Other Body Fluid,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,38,0.0,mg/g:38,16.0,126.0,58.816
+51910,(Albumin),Pleural,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+51926,(Albumin),Stool,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+51927,"Albumin, Stool",Stool,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,1,100.0,g/dL:1,,,
+52022,"Albumin, Blood",Blood,Blood Gas,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+52703,"Albumin, Urine",Urine,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+53085,Albumin,Blood,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,69,0.0,mg/dL:69,2.7,4.9,3.877
+53116,(Albumin),Ascites,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+53138,(Albumin),Blood,Chemistry,albumin,Albumin,Serum albumin indicates nutritional/inflammatory status; urine albumin indicates glomerular barrier injury.,0,0.0,None observed,,,
+50851,"Urea Nitrogen, Ascites",Ascites,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,31,0.0,mg/dL:31,3.0,67.0,26.194
+51006,Urea Nitrogen,Blood,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,4202807,0.05,mg/dL:4202806; <MISSING_UOM>:1,0.0,305.0,24.148
+51045,"Urea Nitrogen, Body Fluid",Other Body Fluid,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,58,1.72,mg/dL:58,2.0,95.0,34.895
+51104,"Urea Nitrogen, Urine",Urine,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,44833,0.34,mg/dL:44833,0.0,3505.0,506.747
+51804,"Urea Nitrogen, CSF",Cerebrospinal Fluid,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,0,0.0,None observed,,,
+51825,"Urea Nitrogen, Joint Fluid",Joint Fluid,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,0,0.0,None observed,,,
+51842,Bun,Other Body Fluid,Chemistry,bun,BUN / Urea Nitrogen,Blood Urea Nitrogen abbreviation in legacy/alternate lab codes.,0,0.0,None observed,,,
+51922,"Urea Nitrogen, Pleural",Pleural,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,2,0.0,mg/dL:2,9.0,48.0,28.5
+51951,"Urea Nitrogen, Stool",Stool,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,0,0.0,None observed,,,
+52647,Urea Nitrogen,Blood,Chemistry,urea,BUN / Urea Nitrogen,Marker of protein catabolism and renal clearance; key component of BUN/Cr ratio.,1235,0.57,mg/dL:1235,3.0,139.0,18.077
+50841,"Creatinine, Ascites",Ascites,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,2869,0.35,mg/dL:2869,0.0,178.5,3.174
+50912,Creatinine,Blood,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,4319091,0.04,mg/dL:4319090; <MISSING_UOM>:1,0.0,808.0,1.339
+51021,"Creatinine, Joint Fluid",Joint Fluid,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,3,0.0,mg/dL:3,0.6,30.3,10.8
+51032,"Creatinine, Body Fluid",Other Body Fluid,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,508,2.17,mg/dL:508,0.0,182.0,7.306
+51052,"Creatinine, Pleural",Pleural,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,1842,0.49,mg/dL:1842,0.0,103.0,1.509
+51067,24 hr Creatinine,Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,10828,0.0,mg/24hr:10828,0.0,16802.0,1185.957
+51070,"Albumin/Creatinine, Urine",Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,71770,13.66,mg/g:71762; <MISSING_UOM>:8,0.0,128636.0,308.243
+51073,"Amylase/Creatinine Ratio, Urine",Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,119,0.84,Ratio:119,0.1,6385.7,489.953
+51080,Creatinine Clearance,Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,717,0.56,mL/min:717,0.2,501.0,83.531
+51081,"Creatinine, Serum",Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,717,0.42,mg/dL:717,0.1,17.8,1.271
+51082,"Creatinine, Urine",Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,237799,0.07,mg/dL:237799,0.0,1159.0,101.967
+51099,Protein/Creatinine Ratio,Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,100387,3.07,Ratio:32757; mg/mg:67630,0.0,642.5,1.044
+51106,Urine Creatinine,Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,717,0.42,mg/dL:717,7.0,353.0,70.172
+51787,"Creatinine, CSF",Cerebrospinal Fluid,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,0,0.0,None observed,,,
+51937,"Creatinine, Stool",Stool,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,0,0.0,None observed,,,
+51963,Amylase/Creatinine Clearance,Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,0,0.0,None observed,,,
+51977,"Creatinine, Blood",Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,0,0.0,None observed,,,
+52000,Urine  Creatinine,Urine,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,0,0.0,None observed,,,
+52024,"Creatinine, Whole Blood",Blood,Blood Gas,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,15175,0.44,mg/dL:15175,0.1,23.0,1.759
+52546,Creatinine,Blood,Chemistry,creatinine,Creatinine,Primary endogenous filtration biomarker for kidney function and eGFR calculation.,1273,0.31,mg/dL:1273,0.2,12.3,1.005
+50803,"Calculated Bicarbonate, Whole Blood",Blood,Blood Gas,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,32994,0.17,mEq/L:32994,2.0,220.0,23.575
+50806,"Chloride, Whole Blood",Blood,Blood Gas,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,108168,0.1,mEq/L:108168,1.9,405.0,104.469
+50822,"Potassium, Whole Blood",Blood,Blood Gas,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,333554,0.15,mEq/L:333554,0.1,538.0,4.316
+50824,"Sodium, Whole Blood",Blood,Blood Gas,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,159073,0.05,mEq/L:159073,1.36,1336.0,135.729
+50833,Potassium,Other Body Fluid,Blood Gas,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,0,0.0,None observed,,,
+50834,"Sodium, Body Fluid",Other Body Fluid,Blood Gas,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,0,0.0,None observed,,,
+50837,"Bicarbonate, Ascites",Ascites,Chemistry,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,43,4.65,mEq/L:43,6.0,42.0,22.854
+50839,"Chloride, Ascites",Ascites,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,44,0.0,mEq/L:44,93.0,135.0,109.318
+50847,"Potassium, Ascites",Ascites,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,48,0.0,mEq/L:48,3.1,11.6,4.425
+50848,"Sodium, Ascites",Ascites,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,61,0.0,mEq/L:61,109.0,153.0,136.475
+50882,Bicarbonate,Blood,Chemistry,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,3934240,0.02,mEq/L:3934239; <MISSING_UOM>:1,2.0,132.0,25.274
+50902,Chloride,Blood,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,4055101,0.02,mEq/L:4055100; <MISSING_UOM>:1,39.0,155.0,101.946
+50971,Potassium,Blood,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,4149507,0.06,mEq/L:4149506; <MISSING_UOM>:1,0.7,26.5,4.189
+50983,Sodium,Blood,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,4111289,0.01,mEq/L:4111288; <MISSING_UOM>:1,67.0,185.0,138.543
+51027,"Bicarbonate, Other Fluid",Other Body Fluid,Chemistry,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,203,5.42,mEq/L:203,7.0,125.0,67.092
+51030,"Chloride, Body Fluid",Other Body Fluid,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,33,3.03,mEq/L:33,55.0,136.0,103.562
+51041,"Potassium, Body Fluid",Other Body Fluid,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,41,12.2,mEq/L:41,2.4,183.0,11.436
+51042,"Sodium, Body Fluid",Other Body Fluid,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,45,6.67,mEq/L:45,18.0,152.0,117.286
+51048,"Bicarbonate, Pleural",Pleural,Chemistry,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,3,0.0,mEq/L:3,16.0,31.0,23.667
+51050,"Chloride, Pleural",Pleural,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,2,0.0,mEq/L:2,109.0,110.0,109.5
+51057,"Potassium, Pleural",Pleural,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,5,0.0,mEq/L:5,4.0,4.6,4.22
+51058,"Sodium, Pleural",Pleural,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,7,0.0,mEq/L:7,133.0,148.0,138.429
+51061,"Bicarbonate, Stool",Stool,Chemistry,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,47,36.17,mEq/L:47,2.0,65.0,25.5
+51062,"Chloride, Stool",Stool,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,92,7.61,mEq/L:92,10.0,210.0,67.753
+51064,"Potassium, Stool",Stool,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,239,11.3,mEq/L:239,1.6,93.0,28.066
+51065,"Sodium, Stool",Stool,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,242,7.85,mEq/L:242,11.0,354.0,85.067
+51076,"Bicarbonate, Urine",Urine,Chemistry,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,5179,81.81,mEq/L:5179,0.3,59.0,10.697
+51078,"Chloride, Urine",Urine,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,44853,12.32,mEq/L:44853,10.0,314.0,62.323
+51097,"Potassium, Urine",Urine,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,47462,1.28,mEq/L:47462,2.0,148.0,36.386
+51100,"Sodium, Urine",Urine,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,86892,17.63,mEq/L:86892,6.0,588.0,63.804
+51782,"Bicarbonate, CSF",Cerebrospinal Fluid,Chemistry,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,0,0.0,None observed,,,
+51784,"Chloride, CSF",Cerebrospinal Fluid,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,1,0.0,mEq/L:1,127.0,127.0,127.0
+51800,"Potassium, CSF",Cerebrospinal Fluid,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,0,0.0,None observed,,,
+51801,"Sodium, CSF",Cerebrospinal Fluid,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,0,0.0,None observed,,,
+51811,"Bicarbonate,Joint Fluid",Joint Fluid,Chemistry,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,0,0.0,None observed,,,
+51813,"Chloride, Joint Fluid",Joint Fluid,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,0,0.0,None observed,,,
+51822,"Potassium, Joint Fluid",Joint Fluid,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,0,0.0,None observed,,,
+51823,"Sodium, Joint Fluid",Joint Fluid,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,0,0.0,None observed,,,
+52039,Calculated Bicarbonate,Fluid,Blood Gas,bicarbonate,Electrolytes,Acid-base homeostasis and marker of metabolic acidosis in chronic kidney disease.,0,0.0,None observed,,,
+52046,"Potassium, Urine",Urine,Blood Gas,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,0,0.0,None observed,,,
+52047,"Sodium, Urine",Urine,Blood Gas,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,0,0.0,None observed,,,
+52434,"Chloride, Whole Blood",Blood,Blood Gas,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,0,0.0,None observed,,,
+52452,"Potassium, Whole Blood",Blood,Blood Gas,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,0,0.0,None observed,,,
+52455,"Sodium, Whole Blood",Blood,Blood Gas,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,0,0.0,None observed,,,
+52535,Chloride,Blood,Chemistry,chloride,Electrolytes,Anion balance and metabolic evaluation alongside sodium and bicarbonate.,1235,0.0,mEq/L:1235,71.0,117.0,102.399
+52610,Potassium,Blood,Chemistry,potassium,Electrolytes,Critical electrolyte regulated by distal nephron; hyperkalemia risk in declining GFR.,1310,0.23,mEq/L:1310,2.2,9.0,4.072
+52623,Sodium,Blood,Chemistry,sodium,Electrolytes,Extracellular volume and osmolality regulation; marker of tubular handling and fluid status.,1309,0.08,mEq/L:1309,116.0,145.0,138.428
+50809,Glucose,Blood,Blood Gas,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,281398,0.48,mg/dL:281398,0.12,1276103.0,149.837
+50842,"Glucose, Ascites",Ascites,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,7044,0.58,mg/dL:7044,0.0,1382.0,142.733
+50931,Glucose,Blood,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,3621769,0.01,mg/dL:3621768; <MISSING_UOM>:1,0.0,23200.0,127.874
+51022,"Glucose, Joint Fluid",Joint Fluid,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,171,1.75,mg/dL:171,0.0,540.0,92.387
+51034,"Glucose, Body Fluid",Other Body Fluid,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,928,1.94,mg/dL:928,0.0,1540.0,110.009
+51053,"Glucose, Pleural",Pleural,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,9195,1.97,mg/dL:9195,0.0,1053.0,116.694
+51084,"Glucose, Urine",Urine,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,191,6.28,mg/dL:191,0.0,5400.0,472.425
+51478,Glucose,Urine,Hematology,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,843478,92.42,mg/dL:843478,30.0,1000.0,444.638
+51790,"Glucose, CSF",Cerebrospinal Fluid,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,15151,0.13,mg/dL:15151,0.0,548.0,71.287
+51941,"Glucose, Stool",Stool,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,0,0.0,None observed,,,
+51981,Glucose,Urine,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,1715,92.48,mg/dL:1715,100.0,1000.0,263.566
+52027,"Glucose, Whole Blood",Blood,Blood Gas,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,0,0.0,None observed,,,
+52569,Glucose,Blood,Chemistry,glucose,Glucose,Key metabolic covariate for diabetic kidney disease (DKD) and tubular glycosuria.,1309,0.31,mg/dL:1309,63.0,467.0,124.418
+50849,"Total Protein, Ascites",Ascites,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",10293,0.65,g/dL:10293,0.0,795.0,1.97
+50864,Alpha-Fetoprotein,Blood,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",39037,1.26,ng/mL:39037,0.6,1634000.0,1796.235
+50889,C-Reactive Protein,Blood,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",178039,2.12,mg/L:177983; <MISSING_UOM>:56,0.1,608.1,34.36
+50975,Protein Electrophoresis,Blood,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",56769,100.0,<MISSING_UOM>:56769,,,
+50976,"Protein, Total",Blood,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",217309,0.01,g/dL:217309,0.9,18.7,6.805
+51024,"Total Protein, Joint Fluid",Joint Fluid,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",132,0.76,g/dL:132,0.8,7.8,3.992
+51043,"Total Protein, Body Fluid",Other Body Fluid,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",915,1.53,g/dL:915,0.0,302.0,4.6
+51059,"Total Protein, Pleural",Pleural,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",9810,0.32,g/dL:9810,0.0,143.0,3.107
+51068,24 hr Protein,Urine,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",5100,0.0,mg/24hr:5100,0.0,79365.0,781.96
+51102,"Total Protein, Urine",Urine,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",115596,8.4,mg/dL:115596,0.2,19900.0,77.965
+51270,"Protein C, Antigen",Blood,Hematology,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",136,0.74,%:136,10.0,203.0,70.185
+51271,"Protein C, Functional",Blood,Hematology,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",2005,2.34,%:2005,9.0,316.0,104.95
+51272,"Protein S, Antigen",Blood,Hematology,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",178,1.12,%:178,25.0,154.0,83.994
+51273,"Protein S, Functional",Blood,Hematology,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",1806,2.6,%:1806,7.0,288.0,95.351
+51492,Protein,Urine,Hematology,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",843478,66.65,mg/dL:843478,10.0,600.0,68.77
+51802,"Total Protein, CSF",Cerebrospinal Fluid,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",15572,0.55,mg/dL:15572,0.2,11100.0,69.573
+51949,"Total Protein, Stool",Stool,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",0,0.0,None observed,,,
+51992,Protein,Urine,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",1715,78.08,mg/dL:1715,2.0,300.0,60.564
+52162,Protein S,Blood,Hematology,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",0,0.0,None observed,,,
+53096,"Protein, Total",Blood,Chemistry,protein,Urine / Total Protein,"Proteinuria assessment (24h urine protein, dipstick, protein/creatinine ratio) for glomerular damage.",68,0.0,mg/dL:68,5.8,8.8,7.328
+50920,Estimated GFR (MDRD equation),Blood,Chemistry,gfr,eGFR Metric,"Calculated or reported Glomerular Filtration Rate estimates (MDRD, CKD-EPI) in lab records.",1665881,100.0,<MISSING_UOM>:1665881,0.0,0.0,0.0
+51770,MDRDgfr,Blood,Chemistry,gfr,eGFR Metric,"Calculated or reported Glomerular Filtration Rate estimates (MDRD, CKD-EPI) in lab records.",0,0.0,None observed,,,
+52026,Estimated GFR (MDRD equation),Blood,Blood Gas,gfr,eGFR Metric,"Calculated or reported Glomerular Filtration Rate estimates (MDRD, CKD-EPI) in lab records.",10480,100.0,<MISSING_UOM>:10480,,,
+53161,Estimated GFR (CKD- EPI Refit),Blood,Chemistry,gfr,eGFR Metric,"Calculated or reported Glomerular Filtration Rate estimates (MDRD, CKD-EPI) in lab records.",81810,0.0,mL/min/1.73m2:81809; <MISSING_UOM>:1,1.0,182.0,77.374
+53180,Estimated GFR (CKD- EPI 2021),Blood,Blood Gas,gfr,eGFR Metric,"Calculated or reported Glomerular Filtration Rate estimates (MDRD, CKD-EPI) in lab records.",2125,0.0,mL/min/1.73m2:2125,2.0,141.0,63.752

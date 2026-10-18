@@ -1,0 +1,49 @@
+# Configuration file for data paths and execution settings
+# All paths are specified relative to the project root directory.
+
+project_root: "."
+
+data:
+  raw_dir: "data/raw"
+  interim_dir: "data/interim"
+  processed_dir: "data/processed"
+  raw_files:
+    d_labitems: "data/raw/d_labitems.csv"
+    labevents: "data/raw/labevents.csv"
+    patients: "data/raw/patients.csv"
+    admissions: "data/raw/admissions.csv"
+
+reports:
+  generated_dir: "reports/generated"
+  dataset_inventory: "reports/generated/dataset_inventory.md"
+  lab_item_inventory: "reports/generated/lab_item_inventory.csv"
+  data_quality_summary: "reports/generated/data_quality_summary.csv"
+  renal_candidate_items: "reports/generated/renal_candidate_items.csv"
+
+audit:
+  smoke:
+    chunk_size: 100000
+    max_chunks: 2  # 200,000 rows sample for rapid verification
+  full:
+    chunk_size: 250000
+    max_chunks: null  # Process complete dataset
+
+cohort:
+  patient_cap: 2500
+  min_creatinine_obs: 3
+  anchor_itemid: 50912
+  target_item_ids:
+    creatinine: 50912
+    urea_nitrogen: 51006
+    potassium: 50971
+    sodium: 50983
+    bicarbonate: 50882
+    glucose: 50931
+  chunk_size: 250000
+  outputs:
+    cohort_labs_csv: "data/processed/cohort_renal_bounded.csv"
+    cohort_patients_csv: "data/processed/cohort_patients.csv"
+    quality_report_md: "reports/generated/cohort_quality_report.md"
+    summary_csv: "reports/generated/cohort_summary.csv"
+    summary_json: "reports/generated/cohort_summary.json"
+

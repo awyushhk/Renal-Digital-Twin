@@ -1,0 +1,7 @@
+itemid,label,standard_unit,total_observations,valid_observations,missing_observations,missing_pct,min,q25,median,q75,max,mean,std,exact_duplicate_rows,conflicting_rows
+50912,Creatinine,mg/dL,53924,53897,27,0.05,0.0,0.7,1.0,1.4,20.2,1.347,1.34,80,30
+51006,Urea Nitrogen,mg/dL,52559,52537,22,0.042,1.0,13.0,18.0,29.0,240.0,24.57,19.649,52,42
+50971,Potassium,mEq/L,51816,51784,32,0.062,1.7,3.8,4.1,4.5,12.6,4.197,0.62,22,62
+50983,Sodium,mEq/L,51238,51229,9,0.018,103.0,136.0,139.0,141.0,177.0,138.648,4.518,20,44
+50882,Bicarbonate,mEq/L,48917,48904,13,0.027,4.0,23.0,25.0,28.0,50.0,25.162,4.223,10,38
+50931,Glucose,mg/dL,45006,44999,7,0.016,8.0,94.0,111.0,141.0,2240.0,128.629,64.528,4,52

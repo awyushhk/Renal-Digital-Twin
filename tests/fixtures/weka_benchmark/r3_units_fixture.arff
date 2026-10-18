@@ -1,0 +1,12 @@
+@relation units_fixture
+@attribute subject_id numeric
+@attribute itemid numeric
+@attribute valuenum numeric
+@attribute valueuom {g_dL, mg_dL}
+@attribute dipstick_grade {NEG, TR, 1+, 2+, 3+, 4+}
+
+@data
+1001,50862,4.0,"g_dL","NEG"
+1002,53085,4000.0,"mg_dL","TR"
+1003,50862,2.5,"g_dL","1+"
+1004,53085,2500.0,"mg_dL","3+"

@@ -1,0 +1,18 @@
+table,dimension,metric,value,status,notes
+d_labitems,Completeness,Missing label count,4.0,Warning,4 items have null labels in MIMIC-IV 3.1
+patients,Completeness,Missing subject_id count,0.0,Pass,Zero missing subject IDs
+patients,Completeness,Missing dod count,326326.0,Info,Expected; majority of patients are alive or out-of-hospital
+admissions,Completeness,Missing hadm_id count,0.0,Pass,Zero missing admission IDs
+admissions,Completeness,Missing admittime/dischtime count,0.0,Pass,All admissions have non-null admission and discharge times
+labevents,Completeness,Missing hadm_id percentage,46.58,Warning,Outpatient/ED or pre-admission labs lack hadm_id linkage
+labevents,Completeness,Missing valuenum percentage,13.57,Info,Includes qualitative/text-only laboratory results
+labevents,Completeness,Missing charttime count,0.0,Pass,Timestamp availability for temporal alignment
+d_labitems,Uniqueness,Duplicate itemid count,0.0,Pass,Primary key itemid is 100% unique
+patients,Uniqueness,Duplicate subject_id count,0.0,Pass,Primary key subject_id is 100% unique
+admissions,Uniqueness,Duplicate hadm_id count,0.0,Pass,Primary key hadm_id is 100% unique
+labevents,Uniqueness,Duplicate rows in chunks,0.0,Pass,Exact row duplicates across all columns
+labevents,Uniqueness,"Duplicate measurement keys (subject_id, charttime, itemid)",0.0,Pass,Multiple readings for same patient/timestamp/item
+admissions,Validity,Negative length of stay count (dischtime < admittime),175.0,Fail,Discharge must occur at or after admission
+labevents,Validity,Unparseable charttime count,0.0,Pass,All charttimes must parse to ISO standard datetime
+admissions->patients,Consistency,Admissions subject_id in patients percentage,100.0,Pass,Referential integrity from admissions to patients
+labevents,Consistency,Conflicting valuenum keys count,0.0,Pass,Multiple readings at same timestamp with differing numeric values

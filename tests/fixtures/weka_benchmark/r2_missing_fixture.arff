@@ -1,0 +1,13 @@
+@relation missing_fixture
+@attribute subject_id numeric
+@attribute step numeric
+@attribute creatinine numeric
+@attribute bun numeric
+
+@data
+1001.0,1.0,?,15.0
+1001.0,2.0,1.2,?
+1001.0,3.0,1.4,20.0
+1001.0,4.0,?,25.0
+1002.0,1.0,2.0,30.0
+1002.0,2.0,2.5,?

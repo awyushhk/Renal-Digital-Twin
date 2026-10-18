@@ -1,0 +1,64 @@
+# ==============================================================================
+# Nephron-Aware Renal Digital Twin — .gitignore
+# ==============================================================================
+
+# --- Python & Bytecode ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# --- Virtual Environments ---
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# --- Testing & Coverage ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# --- Data Privacy & Clinical Governance (PhysioNet / MIMIC-IV / HIPAA) ---
+# Raw and processed MIMIC-IV clinical datasets must NEVER be committed to GitHub.
+data/raw/*
+!data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Catch-all for large data files and archives anywhere in repository
+*.csv.gz
+*.tar.gz
+*.zip
+*.parquet
+*.feather
+
+# --- Temporary Test & Benchmark Scratch Outputs ---
+# Exclude temporary intermediate outputs while tracking validated reports & summary tables
+reports/generated/*.arff
+reports/generated/*.tmp
+reports/generated/*.log
+scratch/
+*.tmp
+*.log
+
+# --- IDEs, Editors & Operating System ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.env

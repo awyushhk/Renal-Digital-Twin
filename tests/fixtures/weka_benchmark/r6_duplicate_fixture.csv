@@ -1,0 +1,5 @@
+subject_id,charttime,itemid,valuenum,source
+1001,2150-01-01 10:00:00,50912,1.2,central_lab
+1001,2150-01-01 10:00:00,50912,1.2,central_lab
+1001,2150-01-01 10:00:00,50912,1.8,poc_verifier
+1002,2150-01-01 11:00:00,50912,0.8,central_lab
