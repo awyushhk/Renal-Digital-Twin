@@ -4,8 +4,8 @@
 **Milestone**: M1.4 End-to-End Integration and Validation  
 **Parent Artifact**: Validated M1.2 Phase B Cohort (`data/processed/cohort_renal_bounded.csv`)  
 **Status**: PASS  
-**Date (UTC)**: 2026-10-18T18:45:25.180936+00:00  
-**Execution Runtime**: 22.03 seconds  
+**Date (UTC)**: 2026-10-19T17:35:24.605292+00:00  
+**Execution Runtime**: 24.75 seconds  
 
 ---
 
@@ -66,7 +66,7 @@ Total Bounded Cohort Input Rows:            303,460
 Total Output Rows (Zero Data Loss):         303,460 (100.000%)
 ```
 
-- **Runtime for Full Cohort Arbitration**: `1.51 seconds` on 303,460 rows.
+- **Runtime for Full Cohort Arbitration**: `1.50 seconds` on 303,460 rows.
 - **Exact Collision Disjointness**: 0 rows belong to both duplicate and conflicting categories.
 - **Traceability Guarantee**: Every superseded record is linked to its primary counterpart via `superseded_by_labevent_id` and tagged with `is_primary_effective=False`.
 
@@ -114,8 +114,8 @@ On a standardized 5,000-row integration benchmark across Arms 1, 2, and 3:
 
 - **Complete Test Suite**: 87 passing tests in 22.52 seconds.
 - **Cohort File Hash Verification**: 9534adfda8889643... verified in < 0.25 seconds.
-- **Full Cohort Arbitration (303,460 rows)**: 1.51 seconds.
-- **Overall End-to-End Acceptance Harness**: 22.03 seconds.
+- **Full Cohort Arbitration (303,460 rows)**: 1.50 seconds.
+- **Overall End-to-End Acceptance Harness**: 24.75 seconds.
 - **Zero Raw Modifications**: Raw source directory (`data/raw`) remains immutable and untouched.
 
 ---

@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "status_message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+  "iterations": 19,
+  "negative_log_likelihood": 35290.9636,
+  "boundary_hits": [
+    "h_43_HIT_UPPER_BOUND(3.0)",
+    "h_52_HIT_LOWER_BOUND(0.05)",
+    "h_63_HIT_LOWER_BOUND(0.05)"
+  ],
+  "training_patient_count": 50,
+  "training_steps_evaluated": 9025,
+  "fitted_parameters": {
+    "tau_hours": [
+      70.38,
+      43.78,
+      95.31
+    ],
+    "q_scales": [
+      0.0883,
+      0.1782,
+      0.0453
+    ],
+    "h_21": 0.8465,
+    "h_42": 0.4973,
+    "h_43": 3.0,
+    "h_52": 0.05,
+    "h_63": 0.05,
+    "r_stds": [
+      0.15,
+      0.25,
+      0.2,
+      0.1,
+      0.2,
+      0.22
+    ],
+    "noise_scale_factor": 1.0
+  }
+}

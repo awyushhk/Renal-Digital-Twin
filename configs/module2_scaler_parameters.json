@@ -1,0 +1,54 @@
+{
+  "training_patient_count": 1750,
+  "training_observation_count": 222073,
+  "analytes": {
+    "creatinine": {
+      "itemid": 50912,
+      "analyte_name": "creatinine",
+      "is_log_scale": true,
+      "train_mean": 0.072352,
+      "train_std": 0.592512,
+      "unit": "mg/dL"
+    },
+    "urea_nitrogen": {
+      "itemid": 51006,
+      "analyte_name": "urea_nitrogen",
+      "is_log_scale": true,
+      "train_mean": 2.987239,
+      "train_std": 0.670842,
+      "unit": "mg/dL"
+    },
+    "potassium": {
+      "itemid": 50971,
+      "analyte_name": "potassium",
+      "is_log_scale": false,
+      "train_mean": 4.204317,
+      "train_std": 0.624413,
+      "unit": "mEq/L"
+    },
+    "sodium": {
+      "itemid": 50983,
+      "analyte_name": "sodium",
+      "is_log_scale": false,
+      "train_mean": 138.704555,
+      "train_std": 4.450229,
+      "unit": "mEq/L"
+    },
+    "bicarbonate": {
+      "itemid": 50882,
+      "analyte_name": "bicarbonate",
+      "is_log_scale": false,
+      "train_mean": 25.182089,
+      "train_std": 4.311654,
+      "unit": "mEq/L"
+    },
+    "glucose": {
+      "itemid": 50931,
+      "analyte_name": "glucose",
+      "is_log_scale": true,
+      "train_mean": 4.786185,
+      "train_std": 0.357274,
+      "unit": "mg/dL"
+    }
+  }
+}

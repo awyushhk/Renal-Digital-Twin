@@ -1,0 +1,56 @@
+{
+  "join_metrics": {
+    "original_lab_rows": 1600,
+    "original_unique_labevent_id": 1600,
+    "original_unique_patients": 15,
+    "original_outpatient_null_hadm": 747,
+    "left_join_rows": 1600,
+    "left_join_unique_labevent_id": 1600,
+    "left_join_unmatched_outpatient_rows": 747,
+    "left_join_duplication_factor": 1.0,
+    "inner_join_rows": 853,
+    "inner_join_unique_labevent_id": 853,
+    "inner_join_lost_rows": 747,
+    "inner_join_data_loss_pct": 46.6875,
+    "naive_join_rows": 7185,
+    "naive_join_unique_labevent_id": 1576,
+    "naive_join_duplicated_instances": 5609,
+    "naive_join_duplication_factor": 4.490625,
+    "naive_join_lost_patients": [
+      10000898
+    ]
+  },
+  "filter_metrics": {
+    "exp_a": {
+      "cmd": "java --add-opens java.base/java.lang=ALL-UNNAMED -cp D:\\Software\\weka\\Weka-3-8-7\\weka.jar weka.filters.unsupervised.attribute.ReplaceMissingValues -i d:\\CKD mini project\\nephron-aware-renal-digital-twin\\reports\\generated\\weka_dataset_integration_audit\\integrated_renal_sample.arff -o d:\\CKD mini project\\nephron-aware-renal-digital-twin\\reports\\generated\\weka_dataset_integration_audit\\exp_a_replacemissingvalues_out.arff",
+      "before_adm_missing": 747,
+      "after_adm_missing": 0,
+      "imputed_mode": "EW EMER.",
+      "phantom_admissions_created": 747
+    },
+    "exp_b": {
+      "cmd": "java --add-opens java.base/java.lang=ALL-UNNAMED -cp D:\\Software\\weka\\Weka-3-8-7\\weka.jar weka.filters.unsupervised.attribute.Normalize -i d:\\CKD mini project\\nephron-aware-renal-digital-twin\\reports\\generated\\weka_dataset_integration_audit\\integrated_renal_sample.arff -o d:\\CKD mini project\\nephron-aware-renal-digital-twin\\reports\\generated\\weka_dataset_integration_audit\\exp_b_normalize_out.arff -S 1.0 -T 0.0",
+      "raw_min": 0.3,
+      "raw_median": 0.9,
+      "raw_max": 4.2,
+      "norm_min": 0.0,
+      "norm_median": 0.001848,
+      "norm_max": 0.012011
+    },
+    "exp_c": {
+      "cmd": "java --add-opens java.base/java.lang=ALL-UNNAMED -cp D:\\Software\\weka\\Weka-3-8-7\\weka.jar weka.filters.unsupervised.instance.RemoveDuplicates -i d:\\CKD mini project\\nephron-aware-renal-digital-twin\\reports\\generated\\weka_dataset_integration_audit\\integrated_renal_sample.arff -o d:\\CKD mini project\\nephron-aware-renal-digital-twin\\reports\\generated\\weka_dataset_integration_audit\\exp_c_removeduplicates_out.arff",
+      "input_rows": 1600,
+      "output_rows": 1600,
+      "exact_duplicates_removed": 0,
+      "conflicts_retained": 8,
+      "conflicts_total": 8
+    }
+  },
+  "censored_metrics": {
+    "global_mean": 1.033333,
+    "row0_before": "<0.1 mg/dL (undetectable / severe cachexia / healthy pediatric)",
+    "row0_after": "1.0333 mg/dL (global cohort mean)",
+    "row4_before": ">15.0 mg/dL (extreme acute renal failure / anuria)",
+    "row4_after": "1.0333 mg/dL (global cohort mean)"
+  }
+}

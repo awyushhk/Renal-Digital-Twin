@@ -1,0 +1,232 @@
+{
+  "sample": {
+    "cohort_rows": 303460,
+    "six_analyte_rows": 303460,
+    "sample_rows": 1578,
+    "sample_patients": [
+      10011231,
+      10011466,
+      10011966,
+      10015834,
+      10025759,
+      10060124,
+      10060829,
+      10062615,
+      10071620,
+      10073248,
+      10091311,
+      10097563,
+      10100170,
+      10102878,
+      10106244,
+      10107850,
+      10109627,
+      10117812,
+      10119770,
+      10134625
+    ],
+    "n_patients": 20,
+    "seed": 42
+  },
+  "outpatient_stats": {
+    "total_rows": 1578,
+    "outpatient_rows": 652,
+    "pct_outpatient": 41.32,
+    "by_analyte": {
+      "Creatinine": {
+        "item_id": 50912,
+        "total_rows": 266,
+        "outpatient_rows": 116,
+        "pct_outpatient": 43.61
+      },
+      "BUN": {
+        "item_id": 51006,
+        "total_rows": 263,
+        "outpatient_rows": 114,
+        "pct_outpatient": 43.35
+      },
+      "Potassium": {
+        "item_id": 50971,
+        "total_rows": 271,
+        "outpatient_rows": 110,
+        "pct_outpatient": 40.59
+      },
+      "Sodium": {
+        "item_id": 50983,
+        "total_rows": 277,
+        "outpatient_rows": 107,
+        "pct_outpatient": 38.63
+      },
+      "Bicarbonate": {
+        "item_id": 50882,
+        "total_rows": 252,
+        "outpatient_rows": 104,
+        "pct_outpatient": 41.27
+      },
+      "Glucose": {
+        "item_id": 50931,
+        "total_rows": 249,
+        "outpatient_rows": 101,
+        "pct_outpatient": 40.56
+      }
+    }
+  },
+  "conflicts": {
+    "groups": 0,
+    "details": []
+  },
+  "censored_in_sample": 0,
+  "arff_v2": {
+    "path": "D:\\CKD mini project\\nephron-aware-renal-digital-twin\\reports\\generated\\weka_renal_attribute_failure_audit\\renal_audit_sample_v2.arff",
+    "rows": 1578,
+    "size_bytes": 167445,
+    "attributes": 14,
+    "note": "STRING attributes removed; hadm_id=-1 encodes outpatient; admission_type=OUTPATIENT for null hadm_id"
+  },
+  "weka_string_bug": {
+    "finding": "WEKA CLI batch mode silently drops ALL data rows when ARFF contains STRING attributes",
+    "original_arff_rows": 1578,
+    "weka_cli_output_rows": 0,
+    "filter_tested": "ReplaceMissingValues, Normalize, RemoveDuplicates",
+    "evidence": "exp_a_replacemissing_out.arff = 641 bytes (header only, no @DATA rows)",
+    "clinical_significance": "Any pipeline using STRING attributes for subject_id or charttime in WEKA CLI will silently produce empty output datasets, corrupting downstream analysis."
+  },
+  "exp_a_v2": {
+    "filter": "ReplaceMissingValues",
+    "success": true,
+    "input_rows": 1578,
+    "admission_type_missing_before": 0,
+    "admission_type_missing_after": 0,
+    "outpatient_rows_encoded_before": 652,
+    "outpatient_rows_after_filter": 652,
+    "note": "OUTPATIENT is a custom nominal category; WEKA will NOT impute it (no missing nominal); imputation targets valuenum=? rows only.",
+    "valuenum_missing_before": 0,
+    "valuenum_missing_after": 0,
+    "weka_global_mean_imputed": 50.3743
+  },
+  "exp_b_v2": {
+    "filter": "Normalize",
+    "success": true,
+    "valuenum_raw_min": 0.5,
+    "valuenum_raw_max": 330.0,
+    "valuenum_norm_min": 0.0,
+    "valuenum_norm_max": 1.0,
+    "creatinine_range_pct_of_feature_space": 0.18,
+    "clinical_impact": "Creatinine clinical range (0.6-1.2 mg/dL) occupies 0.2% of [0,1] feature space; gradient-based models effectively blind to creatinine variation."
+  },
+  "exp_c_v2": {
+    "filter": "RemoveDuplicates",
+    "success": true,
+    "rows_in": 1578,
+    "rows_out": 1578,
+    "conflicting_pairs": 0
+  },
+  "exp_d": {
+    "success": false,
+    "weka_imputed_value": 1.3132,
+    "censored_low_true": "<0.1 mg/dL",
+    "censored_high_true": ">15.0 mg/dL",
+    "fold_error_low": 26.3,
+    "fold_error_high": 11.4
+  },
+  "analyte_stats": {
+    "Creatinine": {
+      "item_id": 50912,
+      "unit": "mg/dL",
+      "normal_low": 0.6,
+      "normal_high": 1.2,
+      "n_obs": 266,
+      "min": 0.5,
+      "p25": 0.8,
+      "median": 1.0,
+      "p75": 1.5,
+      "max": 5.8,
+      "mean": 1.3132,
+      "missing": 0
+    },
+    "BUN": {
+      "item_id": 51006,
+      "unit": "mg/dL",
+      "normal_low": 7.0,
+      "normal_high": 20.0,
+      "n_obs": 263,
+      "min": 4.0,
+      "p25": 11.5,
+      "median": 17.0,
+      "p75": 25.0,
+      "max": 60.0,
+      "mean": 20.1179,
+      "missing": 0
+    },
+    "Potassium": {
+      "item_id": 50971,
+      "unit": "mEq/L",
+      "normal_low": 3.5,
+      "normal_high": 5.0,
+      "n_obs": 271,
+      "min": 2.6,
+      "p25": 3.8,
+      "median": 4.1,
+      "p75": 4.4,
+      "max": 7.9,
+      "mean": 4.1638,
+      "missing": 0
+    },
+    "Sodium": {
+      "item_id": 50983,
+      "unit": "mEq/L",
+      "normal_low": 135.0,
+      "normal_high": 145.0,
+      "n_obs": 277,
+      "min": 118.0,
+      "p25": 137.0,
+      "median": 140.0,
+      "p75": 142.0,
+      "max": 150.0,
+      "mean": 139.5018,
+      "missing": 0
+    },
+    "Bicarbonate": {
+      "item_id": 50882,
+      "unit": "mEq/L",
+      "normal_low": 22.0,
+      "normal_high": 29.0,
+      "n_obs": 252,
+      "min": 13.0,
+      "p25": 20.0,
+      "median": 23.0,
+      "p75": 26.25,
+      "max": 37.0,
+      "mean": 23.25,
+      "missing": 0
+    },
+    "Glucose": {
+      "item_id": 50931,
+      "unit": "mg/dL",
+      "normal_low": 70.0,
+      "normal_high": 99.0,
+      "n_obs": 249,
+      "min": 61.0,
+      "p25": 90.0,
+      "median": 101.0,
+      "p75": 122.0,
+      "max": 330.0,
+      "mean": 113.3373,
+      "missing": 0
+    }
+  },
+  "python_reference": {
+    "cr_rows": 266,
+    "missing": 0,
+    "locf_fills": 0,
+    "global_mean": 1.3132,
+    "mae_locf_vs_global_mean": 0.5623,
+    "note": "LOCF preserves patient baselines; WEKA global-mean imputation mixes patients."
+  },
+  "meta": {
+    "generated_at": "2026-10-19T13:01:36.643318+00:00",
+    "cohort_file": "D:\\CKD mini project\\nephron-aware-renal-digital-twin\\data\\processed\\cohort_renal_bounded.csv",
+    "weka_jar": "D:\\Software\\weka\\Weka-3-8-7\\weka.jar",
+    "script": "run_renal_attribute_audit_v2.py"
+  }
+}

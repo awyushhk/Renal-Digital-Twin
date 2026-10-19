@@ -43,10 +43,14 @@ data/processed/*
 
 # --- Temporary Test & Benchmark Scratch Outputs ---
 # Exclude temporary intermediate outputs while tracking validated reports & summary tables
+reports/generated/**/*.arff
 reports/generated/*.arff
+reports/generated/weka_audit_fixtures/
+reports/generated/weka_dataset_integration_audit/*.csv
 reports/generated/*.tmp
 reports/generated/*.log
 scratch/
+*.arff
 *.tmp
 *.log
 
