@@ -24,7 +24,10 @@ from backend.schemas import (
     ResponseProvenance,
     StateEstimateRequest,
     StateEstimateResponse,
+    ForecastRequest,
+    ForecastResponse,
 )
+from src.engine.forecasting import forecast_patient_biomarkers
 from src.engine.patient_inference import PatientInferenceService
 from src.engine.preprocessing import load_cohort_scalers
 
@@ -283,3 +286,29 @@ def estimate_state(
         first_eligible_time=est.first_eligible_time,
         latest_eligible_time=est.latest_eligible_time,
     )
+
+
+@router.post("/api/v1/forecast", response_model=ForecastResponse)
+def forecast_biomarkers(
+    request: ForecastRequest,
+    service: PatientInferenceService = Depends(get_inference_service),
+) -> ForecastResponse:
+    """Return causal, uncertainty-aware future observable-biomarker forecasts.
+
+    This endpoint never includes later observed values. Deterioration risk is
+    explicitly unavailable until a separately validated endpoint exists.
+    """
+    if service.get_patient_metadata(request.subject_id) is None:
+        raise HTTPException(status_code=404, detail=f"Patient {request.subject_id} not found in bounded cohort")
+    try:
+        result = forecast_patient_biomarkers(
+            service=service,
+            subject_id=request.subject_id,
+            forecast_origin=request.forecast_origin,
+            horizons_hours=request.horizons_hours,
+            timeline_mode=request.timeline_mode,
+            analytes=request.analytes,
+        )
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return ForecastResponse(**result.to_dict())

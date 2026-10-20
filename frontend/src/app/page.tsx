@@ -13,6 +13,7 @@ import PatientSelector from "@/components/PatientSelector";
 import DualTimelineScrubber, { TimelineMode } from "@/components/DualTimelineScrubber";
 import LatentStateGauges from "@/components/LatentStateGauges";
 import ContributingLabsTable from "@/components/ContributingLabsTable";
+import ForecastPanel from "@/components/ForecastPanel";
 import PatientGraphs from "@/components/PatientGraphs";
 import { clinicalTimeToMs, formatClinicalTimestamp } from "@/lib/clinical_time";
 
@@ -34,7 +35,7 @@ export default function DashboardPage() {
   const [estimate, setEstimate] = useState<StateEstimateResponse | null>(null);
   const [estimating, setEstimating] = useState(false);
   const [estimateError, setEstimateError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"gauges" | "graphs" | "labs" | "provenance">("gauges");
+  const [activeTab, setActiveTab] = useState<"gauges" | "graphs" | "forecast" | "labs" | "provenance">("gauges");
 
   // First & Latest Observation timestamps for selected patient
   const [firstObsTime, setFirstObsTime] = useState<string | null>(null);
@@ -273,6 +274,56 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* View navigation remains visible while a selected patient's data loads. */}
+        {selectedPatient && (
+          <section className="clinical-view-navigation" aria-label="Clinical view selector">
+            <div className="clinical-primary-tabs">
+              <button
+                type="button"
+                className={`clinical-primary-tab ${activeTab === "gauges" ? "active" : ""}`}
+                disabled={loadingTrajectory}
+                onClick={() => setActiveTab("gauges")}
+              >
+                Estimated states
+              </button>
+              <button
+                type="button"
+                className={`clinical-primary-tab ${activeTab === "graphs" ? "active" : ""}`}
+                disabled={loadingTrajectory}
+                onClick={() => setActiveTab("graphs")}
+              >
+                Patient timeline
+              </button>
+              <button
+                type="button"
+                className={`clinical-primary-tab forecast-tab ${activeTab === "forecast" ? "active" : ""}`}
+                disabled={loadingTrajectory}
+                onClick={() => setActiveTab("forecast")}
+              >
+                Forecast
+              </button>
+            </div>
+            <div className="clinical-secondary-tabs" aria-label="Additional clinical views">
+              <button
+                type="button"
+                className={`clinical-secondary-tab ${activeTab === "labs" ? "active" : ""}`}
+                disabled={loadingTrajectory}
+                onClick={() => setActiveTab("labs")}
+              >
+                Eligible labs ({estimate?.contributing_observations_count ?? 0})
+              </button>
+              <button
+                type="button"
+                className={`clinical-secondary-tab ${activeTab === "provenance" ? "active" : ""}`}
+                disabled={loadingTrajectory}
+                onClick={() => setActiveTab("provenance")}
+              >
+                Details
+              </button>
+            </div>
+          </section>
+        )}
+
         {/* Trajectory Loading spinner */}
         {selectedPatient && loadingTrajectory && (
           <div className="panel">
@@ -291,50 +342,6 @@ export default function DashboardPage() {
         {/* ── Active Patient Data & Tabs ── */}
         {selectedPatient && !loadingTrajectory && (
           <>
-            {/* View Navigation Tabs */}
-            <div
-              className="view-tabs"
-              style={{
-                display: "flex",
-                gap: 6,
-                background: "var(--bg-surface)",
-                padding: 4,
-                borderRadius: "var(--radius-md)",
-                border: "1px solid var(--border-subtle)",
-                width: "fit-content",
-                marginBottom: 16,
-              }}
-              role="tablist"
-              aria-label="Clinical view selector"
-            >
-              {[
-                { id: "gauges", label: "Estimated states" },
-                { id: "graphs", label: `Patient timeline (${trajectoryRecords.length})` },
-                { id: "labs", label: `Eligible labs (${estimate?.contributing_observations_count ?? 0})` },
-                { id: "provenance", label: "Details" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  id={`tab-${tab.id}`}
-                  role="tab"
-                  aria-selected={activeTab === tab.id}
-                  aria-controls={`tabpanel-${tab.id}`}
-                  type="button"
-                  className="mode-btn"
-                  style={{
-                    fontSize: 12,
-                    padding: "6px 16px",
-                    ...(activeTab === tab.id
-                      ? { background: "var(--bg-elevated)", color: "var(--text-primary)", borderColor: "var(--border-active)" }
-                      : {}),
-                  }}
-                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
             {/* Tab 1: Gauges */}
             {activeTab === "gauges" && (
               <section id="tabpanel-gauges" className="panel" role="tabpanel">
@@ -384,6 +391,16 @@ export default function DashboardPage() {
                 timelineMode={timelineMode}
                 onSelectTime={(t) => handleEstimate(t, timelineMode)}
               />
+            )}
+
+            {activeTab === "forecast" && (
+              <div id="tabpanel-forecast" role="tabpanel">
+                <ForecastPanel
+                  patientId={selectedPatient.subject_id}
+                  queryTime={currentQueryTime}
+                  timelineMode={timelineMode}
+                />
+              </div>
             )}
 
             {/* Tab 3: Contributing Labs Table */}

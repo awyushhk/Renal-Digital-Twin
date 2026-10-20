@@ -271,6 +271,51 @@ class TestStateEstimate:
         assert resp.status_code == 422
 
 
+# ── /api/v1/forecast ────────────────────────────────────────────────────────
+
+class TestForecastEndpoint:
+    PID = 10000032
+    ORIGIN = "2180-08-10T12:00:00"
+
+    def test_forecast_returns_causal_prediction_contract(self, client):
+        resp = client.post("/api/v1/forecast", json={
+            "subject_id": self.PID,
+            "forecast_origin": self.ORIGIN,
+            "horizons_hours": [24],
+            "timeline_mode": "OPERATIONAL",
+        })
+        assert resp.status_code == 200, resp.text
+        data = resp.json()
+        assert data["subject_id"] == self.PID
+        assert data["timeline_mode"] == "OPERATIONAL"
+        assert data["deterioration_risk_status"] == "UNAVAILABLE_NO_VALIDATED_ENDPOINT"
+        assert data["forecasts"]
+        assert all(item["horizon_hours"] == 24 for item in data["forecasts"])
+        assert all(item["target_time"] > self.ORIGIN for item in data["forecasts"])
+
+    def test_forecast_unknown_patient_and_invalid_horizon_are_rejected(self, client):
+        unknown = client.post("/api/v1/forecast", json={
+            "subject_id": 999999999, "forecast_origin": self.ORIGIN, "horizons_hours": [24],
+        })
+        assert unknown.status_code == 404
+        invalid = client.post("/api/v1/forecast", json={
+            "subject_id": self.PID, "forecast_origin": self.ORIGIN, "horizons_hours": [48],
+        })
+        assert invalid.status_code == 400
+
+    def test_forecast_insufficient_history_is_explicit(self, client):
+        resp = client.post("/api/v1/forecast", json={
+            "subject_id": self.PID,
+            "forecast_origin": "2100-01-01T00:00:00",
+            "horizons_hours": [24],
+            "timeline_mode": "OPERATIONAL",
+        })
+        assert resp.status_code == 200, resp.text
+        data = resp.json()
+        assert data["initialization_status"] == "INSUFFICIENT_HISTORY"
+        assert all(item["status"] == "INSUFFICIENT_HISTORY" for item in data["forecasts"])
+
+
 # ── Priority 1 Regression & Trajectory Tests ───────────────────────────────
 
 class TestPriority1RegressionScenarios:

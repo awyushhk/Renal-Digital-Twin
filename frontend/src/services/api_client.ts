@@ -7,6 +7,8 @@
 
 import type {
   CohortSummaryResponse,
+  ForecastRequest,
+  ForecastResponse,
   LatentTrajectoryResponse,
   PatientListResponse,
   PatientTrajectoryResponse,
@@ -80,6 +82,14 @@ export const apiClient = {
   /** POST /api/v1/state/estimate */
   estimateState(req: StateEstimateRequest): Promise<StateEstimateResponse> {
     return apiFetch("/api/v1/state/estimate", {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
+  },
+
+  /** POST /api/v1/forecast; returns causal future biomarker predictions only. */
+  forecast(req: ForecastRequest): Promise<ForecastResponse> {
+    return apiFetch("/api/v1/forecast", {
       method: "POST",
       body: JSON.stringify(req),
     });

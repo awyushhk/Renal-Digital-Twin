@@ -380,6 +380,35 @@ p { color: var(--text-secondary); }
   color: var(--accent-rose); font-size: 12px; display: flex; align-items: center; gap: 8px;
 }
 
+/* ── Module 3 forecast ─────────────────────────────────────────────────── */
+.forecast-panel { margin-top: 0; }
+.forecast-subtitle { margin-top: 3px; font-size: 12px; color: var(--text-muted); }
+.forecast-mode {
+  padding: 4px 8px; border-radius: 99px;
+  color: var(--accent-cyan); background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.16); font-size: 11px;
+  text-transform: capitalize;
+}
+.forecast-controls {
+  display: grid; grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.7fr) auto;
+  gap: 12px; align-items: end;
+}
+.forecast-horizons { display: flex; gap: 6px; }
+.forecast-horizons .filter-btn { margin: 0; min-height: 43px; padding-inline: 12px; }
+.forecast-result { margin-top: 18px; }
+.forecast-meta { color: var(--text-muted); font-size: 11px; margin-bottom: 10px; }
+.forecast-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.forecast-card {
+  padding: 13px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  background: var(--bg-panel); min-width: 0;
+}
+.forecast-card-name { color: var(--text-secondary); font-size: 12px; font-weight: 700; text-transform: capitalize; }
+.forecast-value { margin-top: 5px; color: var(--accent-cyan); font: 700 22px/1.2 'JetBrains Mono', monospace; }
+.forecast-value span { color: var(--text-muted); font-size: 11px; font-weight: 500; }
+.forecast-interval, .forecast-target { margin-top: 6px; color: var(--text-muted); font-size: 11px; line-height: 1.4; }
+.forecast-empty { padding: 14px; color: var(--accent-amber); background: rgba(245, 158, 11, 0.07); border-radius: var(--radius-sm); font-size: 12px; }
+.forecast-caveat { margin-top: 12px; color: var(--text-muted); font-size: 11px; line-height: 1.45; }
+
 .graph-heading {
   display: flex;
   justify-content: space-between;
@@ -388,7 +417,50 @@ p { color: var(--text-secondary); }
   gap: 8px 16px;
   margin-bottom: 8px;
 }
-.view-tabs { max-width: 100%; overflow-x: auto; }
+.clinical-view-navigation {
+  display: block;
+  width: 100%;
+  min-height: 72px;
+  overflow: visible;
+  padding: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.clinical-primary-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.clinical-primary-tab {
+  display: block;
+  min-height: 42px;
+  padding: 9px 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.clinical-primary-tab:hover:not(:disabled) { border-color: var(--accent-cyan); }
+.clinical-primary-tab.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; box-shadow: var(--glow-blue); }
+.clinical-primary-tab.forecast-tab { background: rgba(0, 212, 255, 0.12); border-color: rgba(0, 212, 255, 0.4); color: var(--accent-cyan); }
+.clinical-primary-tab.forecast-tab.active { background: var(--accent-cyan); border-color: var(--accent-cyan); color: var(--bg-base); box-shadow: var(--glow-cyan); }
+.clinical-secondary-tabs { display: flex; gap: 8px; margin-top: 8px; }
+.clinical-secondary-tab {
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+}
+.clinical-secondary-tab.active { color: var(--text-primary); border-color: var(--border-active); }
+.clinical-primary-tab:disabled, .clinical-secondary-tab:disabled { cursor: wait; opacity: 0.55; }
 .graph-heading > div:first-child { min-width: 0; }
 .graph-heading span { line-height: 1.45; }
 .clinical-chart-scroll { overflow-x: auto; padding-bottom: 4px; }
@@ -414,6 +486,7 @@ p { color: var(--text-secondary); }
   .indices-row { grid-template-columns: 1fr 1fr; }
   .indices-grid { grid-template-columns: 1fr; }
   .cohort-stats { grid-template-columns: 1fr 1fr; }
+  .forecast-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 800px) {
   .dashboard-shell {
@@ -431,9 +504,11 @@ p { color: var(--text-secondary); }
   .estimate-btn { width: 100%; }
   .panel { padding: 16px; }
   .panel-header { align-items: flex-start; flex-wrap: wrap; gap: 8px; }
-  .view-tabs { width: 100%; }
-  .view-tabs .mode-btn { flex: 0 0 auto; white-space: nowrap; }
+  .clinical-primary-tabs { grid-template-columns: 1fr; }
+  .clinical-secondary-tabs { flex-wrap: wrap; }
   .gauges-grid { grid-template-columns: 1fr; }
   .indices-row { grid-template-columns: 1fr; }
   .indices-grid { grid-template-columns: 1fr; }
+  .forecast-controls { grid-template-columns: 1fr; }
+  .forecast-grid { grid-template-columns: 1fr; }
 }

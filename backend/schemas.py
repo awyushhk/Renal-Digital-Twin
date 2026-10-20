@@ -145,3 +145,37 @@ class LatentTrajectoryResponse(BaseModel):
     total_epochs: int
     points: List[LatentTrajectoryPoint]
 
+
+class ForecastRequest(BaseModel):
+    subject_id: int
+    forecast_origin: str = Field(..., description="Clinical wall-clock forecast origin")
+    horizons_hours: List[int] = Field(default_factory=lambda: [24, 72, 168])
+    timeline_mode: str = Field("OPERATIONAL", description="OPERATIONAL or BIOLOGICAL")
+    analytes: Optional[List[str]] = None
+
+
+class BiomarkerForecastResponse(BaseModel):
+    analyte_name: str
+    unit: str
+    horizon_hours: int
+    target_time: str
+    predicted_value: Optional[float]
+    predictive_interval_90: Optional[tuple[float, float]]
+    predictive_interval_95: Optional[tuple[float, float]]
+    latent_projected_sd_standardized: Optional[float]
+    predictive_sd_standardized: Optional[float]
+    status: str
+
+
+class ForecastResponse(BaseModel):
+    subject_id: int
+    forecast_origin: str
+    timeline_mode: str
+    eligibility_semantics: str
+    eligible_observation_count: int
+    initialization_status: str
+    forecasts: List[BiomarkerForecastResponse]
+    model_identifier: str
+    baseline_identifiers: List[str]
+    deterioration_risk_status: str
+    caveat: str

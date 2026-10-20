@@ -135,3 +135,37 @@ export interface LatentTrajectoryResponse {
   readonly points: readonly LatentTrajectoryPoint[];
 }
 
+export interface ForecastRequest {
+  readonly subject_id: number;
+  readonly forecast_origin: string;
+  readonly horizons_hours: readonly number[];
+  readonly timeline_mode: "OPERATIONAL" | "BIOLOGICAL";
+  readonly analytes?: readonly string[] | null;
+}
+
+export interface BiomarkerForecast {
+  readonly analyte_name: string;
+  readonly unit: string;
+  readonly horizon_hours: number;
+  readonly target_time: string;
+  readonly predicted_value: number | null;
+  readonly predictive_interval_90: readonly [number, number] | null;
+  readonly predictive_interval_95: readonly [number, number] | null;
+  readonly latent_projected_sd_standardized: number | null;
+  readonly predictive_sd_standardized: number | null;
+  readonly status: string;
+}
+
+export interface ForecastResponse {
+  readonly subject_id: number;
+  readonly forecast_origin: string;
+  readonly timeline_mode: "OPERATIONAL" | "BIOLOGICAL";
+  readonly eligibility_semantics: string;
+  readonly eligible_observation_count: number;
+  readonly initialization_status: string;
+  readonly forecasts: readonly BiomarkerForecast[];
+  readonly model_identifier: string;
+  readonly baseline_identifiers: readonly string[];
+  readonly deterioration_risk_status: "UNAVAILABLE_NO_VALIDATED_ENDPOINT";
+  readonly caveat: string;
+}
