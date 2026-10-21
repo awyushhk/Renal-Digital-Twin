@@ -18,6 +18,7 @@ import PatientGraphs from "@/components/PatientGraphs";
 import { clinicalTimeToMs, formatClinicalTimestamp } from "@/lib/clinical_time";
 
 type BackendStatus = "loading" | "healthy" | "offline";
+type ActiveTab = "gauges" | "graphs" | "forecast" | "labs" | "provenance";
 
 export default function DashboardPage() {
   const [backendStatus, setBackendStatus] = useState<BackendStatus>("loading");
@@ -29,15 +30,15 @@ export default function DashboardPage() {
   const [latentPoints, setLatentPoints] = useState<readonly LatentTrajectoryPoint[]>([]);
   const [loadingTrajectory, setLoadingTrajectory] = useState(false);
 
-  // Timeline & State estimation state
+  // Timeline & state estimation
   const [timelineMode, setTimelineMode] = useState<TimelineMode>("OPERATIONAL");
   const [currentQueryTime, setCurrentQueryTime] = useState<string>("");
   const [estimate, setEstimate] = useState<StateEstimateResponse | null>(null);
   const [estimating, setEstimating] = useState(false);
   const [estimateError, setEstimateError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"gauges" | "graphs" | "forecast" | "labs" | "provenance">("gauges");
+  const [activeTab, setActiveTab] = useState<ActiveTab>("gauges");
 
-  // First & Latest Observation timestamps for selected patient
+  // First & latest observation timestamps for selected patient
   const [firstObsTime, setFirstObsTime] = useState<string | null>(null);
   const [latestObsTime, setLatestObsTime] = useState<string | null>(null);
 
@@ -82,7 +83,7 @@ export default function DashboardPage() {
     [selectedPatient]
   );
 
-  // ── Patient selection handler: load full trajectory & set initial query time to latest observation ──
+  // ── Patient selection: load full trajectory & default query time to latest observation ──
   const handleSelectPatient = useCallback(
     async (patient: PatientSummaryItem) => {
       setSelectedPatient(patient);
@@ -111,11 +112,9 @@ export default function DashboardPage() {
           setFirstObsTime(first);
           setLatestObsTime(last);
 
-          // Default query time to patient's latest clinical observation (wall-clock ISO)
           const defaultQueryTime = last.length === 16 ? `${last}:00` : last;
           setCurrentQueryTime(defaultQueryTime);
 
-          // Run estimation automatically at patient's latest observation
           void handleEstimate(defaultQueryTime, timelineMode);
         } else {
           setFirstObsTime(null);
@@ -131,7 +130,7 @@ export default function DashboardPage() {
     [handleEstimate, timelineMode]
   );
 
-  // ── Mode change handler ──
+  // ── Mode change ──
   const handleModeChange = useCallback(
     (newMode: TimelineMode) => {
       setTimelineMode(newMode);
@@ -141,6 +140,14 @@ export default function DashboardPage() {
     },
     [selectedPatient, currentQueryTime, handleEstimate]
   );
+
+  const navItems: { key: ActiveTab; label: string }[] = [
+    { key: "gauges", label: "Estimated states" },
+    { key: "graphs", label: "Patient timeline" },
+    { key: "forecast", label: "Forecast" },
+    { key: "labs", label: `Eligible labs (${estimate?.contributing_observations_count ?? 0})` },
+    { key: "provenance", label: "Details" },
+  ];
 
   return (
     <div className="dashboard-shell">
@@ -153,9 +160,25 @@ export default function DashboardPage() {
             <div className="topbar-subtitle">Module 2 · Physiology-Informed Latent State Engine</div>
           </div>
         </div>
+
+        <nav className="nav-pills" aria-label="Clinical views">
+          {navItems.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              className={`nav-pill ${activeTab === item.key ? "active" : ""} ${item.key === "forecast" ? "forecast-tab" : ""}`}
+              disabled={!selectedPatient || loadingTrajectory}
+              aria-current={activeTab === item.key ? "page" : undefined}
+              onClick={() => setActiveTab(item.key)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
         <div className="topbar-status-row">
           {cohortSummary && (
-            <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+            <span className="topbar-cohort">
               {cohortSummary.total_patients.toLocaleString()} patients · {cohortSummary.total_observations.toLocaleString()} observations
             </span>
           )}
@@ -171,36 +194,34 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* ── Sidebar: Patient Selector ── */}
+      {/* ── Sidebar ── */}
       <aside className="sidebar" aria-label="Patient selection panel">
         {cohortSummary && (
           <div className="sidebar-section">
             <div className="sidebar-section-title">Cohort Overview</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                <span style={{ color: "var(--text-muted)" }}>Total patients</span>
-                <span style={{ color: "var(--accent-cyan)", fontWeight: 700, fontFamily: "monospace" }}>
-                  {cohortSummary.total_patients.toLocaleString()}
-                </span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                <span style={{ color: "var(--text-muted)" }}>Lab observations</span>
-                <span style={{ color: "var(--accent-blue)", fontWeight: 700, fontFamily: "monospace" }}>
-                  {cohortSummary.total_observations.toLocaleString()}
-                </span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                <span style={{ color: "var(--text-muted)" }}>Gender (F / M)</span>
-                <span style={{ color: "var(--text-secondary)", fontFamily: "monospace" }}>
-                  {cohortSummary.gender_distribution["F"] ?? "—"} / {cohortSummary.gender_distribution["M"] ?? "—"}
-                </span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                <span style={{ color: "var(--text-muted)" }}>Engine Schema</span>
-                <span style={{ color: "var(--accent-teal)", fontFamily: "monospace" }}>
-                  v{cohortSummary.schema_version}
-                </span>
-              </div>
+            <div className="cohort-stat">
+              <span className="cohort-stat-label">Total patients</span>
+              <span className="cohort-stat-value" style={{ color: "var(--accent-blue)" }}>
+                {cohortSummary.total_patients.toLocaleString()}
+              </span>
+            </div>
+            <div className="cohort-stat">
+              <span className="cohort-stat-label">Lab observations</span>
+              <span className="cohort-stat-value" style={{ color: "var(--accent-cyan)" }}>
+                {cohortSummary.total_observations.toLocaleString()}
+              </span>
+            </div>
+            <div className="cohort-stat">
+              <span className="cohort-stat-label">Gender (F / M)</span>
+              <span className="cohort-stat-value" style={{ color: "var(--text-secondary)" }}>
+                {cohortSummary.gender_distribution["F"] ?? "—"} / {cohortSummary.gender_distribution["M"] ?? "—"}
+              </span>
+            </div>
+            <div className="cohort-stat">
+              <span className="cohort-stat-label">Engine schema</span>
+              <span className="cohort-stat-value" style={{ color: "var(--accent-teal)" }}>
+                v{cohortSummary.schema_version}
+              </span>
             </div>
           </div>
         )}
@@ -208,9 +229,7 @@ export default function DashboardPage() {
         <div className="sidebar-section" style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
           <div className="sidebar-section-title">Select patient</div>
           {backendStatus === "offline" ? (
-            <div className="error-banner" style={{ marginTop: 8 }}>
-              ⚠ Backend is offline. Start the FastAPI server on port 8000.
-            </div>
+            <div className="error-banner">⚠ Backend is offline. Start the FastAPI server on port 8000.</div>
           ) : (
             <PatientSelector
               selectedId={selectedPatient?.subject_id ?? null}
@@ -222,6 +241,21 @@ export default function DashboardPage() {
 
       {/* ── Main content ── */}
       <main className="main-content" id="main-panel">
+        <div className="page-hero">
+          <div>
+            <h1 className="page-hero-title">Renal State Overview</h1>
+            <p className="page-hero-sub">
+              Causal latent-state estimates and forecasts from irregular laboratory data. Research prototype — not for clinical use.
+            </p>
+          </div>
+          {selectedPatient && (
+            <span id="selected-patient-info" className="patient-chip">
+              Patient <strong>#{selectedPatient.subject_id}</strong> · {selectedPatient.gender} · {Math.round(selectedPatient.anchor_age)} yr · {selectedPatient.total_target_labs_count} source labs
+              {trajectoryRecords.length > 0 ? ` · ${trajectoryRecords.length} effective records` : ""}
+            </span>
+          )}
+        </div>
+
         {/* Timeline query panel */}
         <section className="panel" aria-labelledby="timeline-panel-title">
           <div className="panel-header">
@@ -229,18 +263,6 @@ export default function DashboardPage() {
               <span className="panel-title-icon">⏱</span>
               Patient Timeline &amp; Query Time
             </h2>
-            {selectedPatient && (
-              <span
-                id="selected-patient-info"
-                style={{
-                  fontSize: 12, color: "var(--accent-cyan)", fontFamily: "monospace",
-                  background: "rgba(0,212,255,0.08)", padding: "4px 10px",
-                  borderRadius: "99px", border: "1px solid rgba(0,212,255,0.2)",
-                }}
-              >
-                Patient #{selectedPatient.subject_id} · {selectedPatient.gender} · {Math.round(selectedPatient.anchor_age)} yr · {selectedPatient.total_target_labs_count} source labs{trajectoryRecords.length > 0 ? ` · ${trajectoryRecords.length} effective records` : ""}
-              </span>
-            )}
           </div>
 
           <DualTimelineScrubber
@@ -255,17 +277,15 @@ export default function DashboardPage() {
             totalObservationsCount={trajectoryRecords.length}
           />
 
-          {estimateError && (
-            <div className="error-banner" style={{ marginTop: 12 }}>⚠ {estimateError}</div>
-          )}
+          {estimateError && <div className="error-banner" style={{ marginTop: 12 }}>⚠ {estimateError}</div>}
         </section>
 
-        {/* Empty state when no patient is selected */}
+        {/* Empty state */}
         {!selectedPatient && (
           <div className="panel">
             <div className="empty-state">
               <div className="empty-state-icon">🧬</div>
-              <h2 className="empty-state-title">Select a Patient to Begin</h2>
+              <h2 className="empty-state-title">Select a patient to begin</h2>
               <p className="empty-state-sub">
                 Choose any patient from the left sidebar (or search by subject ID, e.g. 10006029).
                 The engine will replay the patient&apos;s longitudinal labs and run the continuous-discrete latent state filter.
@@ -274,75 +294,22 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* View navigation remains visible while a selected patient's data loads. */}
-        {selectedPatient && (
-          <section className="clinical-view-navigation" aria-label="Clinical view selector">
-            <div className="clinical-primary-tabs">
-              <button
-                type="button"
-                className={`clinical-primary-tab ${activeTab === "gauges" ? "active" : ""}`}
-                disabled={loadingTrajectory}
-                onClick={() => setActiveTab("gauges")}
-              >
-                Estimated states
-              </button>
-              <button
-                type="button"
-                className={`clinical-primary-tab ${activeTab === "graphs" ? "active" : ""}`}
-                disabled={loadingTrajectory}
-                onClick={() => setActiveTab("graphs")}
-              >
-                Patient timeline
-              </button>
-              <button
-                type="button"
-                className={`clinical-primary-tab forecast-tab ${activeTab === "forecast" ? "active" : ""}`}
-                disabled={loadingTrajectory}
-                onClick={() => setActiveTab("forecast")}
-              >
-                Forecast
-              </button>
-            </div>
-            <div className="clinical-secondary-tabs" aria-label="Additional clinical views">
-              <button
-                type="button"
-                className={`clinical-secondary-tab ${activeTab === "labs" ? "active" : ""}`}
-                disabled={loadingTrajectory}
-                onClick={() => setActiveTab("labs")}
-              >
-                Eligible labs ({estimate?.contributing_observations_count ?? 0})
-              </button>
-              <button
-                type="button"
-                className={`clinical-secondary-tab ${activeTab === "provenance" ? "active" : ""}`}
-                disabled={loadingTrajectory}
-                onClick={() => setActiveTab("provenance")}
-              >
-                Details
-              </button>
-            </div>
-          </section>
-        )}
-
-        {/* Trajectory Loading spinner */}
+        {/* Loading */}
         {selectedPatient && loadingTrajectory && (
           <div className="panel">
             <div className="empty-state">
-              <div style={{ width: 44, height: 44, border: "3px solid rgba(99,140,255,0.2)", borderTopColor: "var(--accent-blue)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-              <div className="empty-state-title" style={{ marginTop: 12 }}>
-                Loading Patient #{selectedPatient.subject_id} Longitudinal Records…
+              <div className="spinner" />
+              <div className="empty-state-title" style={{ marginTop: 14 }}>
+                Loading patient #{selectedPatient.subject_id} longitudinal records…
               </div>
-              <p className="empty-state-sub">
-                Fetching laboratory trajectory and pre-computing filter steps.
-              </p>
+              <p className="empty-state-sub">Fetching laboratory trajectory and pre-computing filter steps.</p>
             </div>
           </div>
         )}
 
-        {/* ── Active Patient Data & Tabs ── */}
+        {/* Active patient views */}
         {selectedPatient && !loadingTrajectory && (
           <>
-            {/* Tab 1: Gauges */}
             {activeTab === "gauges" && (
               <section id="tabpanel-gauges" className="panel" role="tabpanel">
                 <div className="panel-header">
@@ -351,14 +318,13 @@ export default function DashboardPage() {
                     Estimated Kidney States
                   </h2>
                   {estimate && (
-                    <span style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "monospace" }}>
-                      Mode: <strong style={{ color: "var(--accent-cyan)" }}>{estimate.timeline_mode}</strong> · Query:{" "}
-                      {formatClinicalTimestamp(estimate.query_time)}
+                    <span className="panel-meta">
+                      Mode: <strong>{estimate.timeline_mode}</strong> · Query: {formatClinicalTimestamp(estimate.query_time)}
                     </span>
                   )}
                 </div>
                 {estimate ? (
-                  <LatentStateGauges estimate={estimate} />
+                  <LatentStateGauges estimate={estimate} history={latentPoints} />
                 ) : (
                   <div style={{ textAlign: "center", padding: "32px 0", color: "var(--text-muted)" }}>
                     Click «Estimate State» to evaluate filter at the chosen query time.
@@ -367,7 +333,6 @@ export default function DashboardPage() {
               </section>
             )}
 
-            {/* The three patient graphs are part of the primary dashboard flow, not a secondary view. */}
             {activeTab === "gauges" && trajectoryRecords.length > 0 && (
               <div id="primary-patient-graphs" aria-label="Patient graphs">
                 <PatientGraphs
@@ -381,7 +346,6 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Tab 2: Graphs */}
             {activeTab === "graphs" && (
               <PatientGraphs
                 observations={trajectoryRecords}
@@ -403,7 +367,6 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Tab 3: Contributing Labs Table */}
             {activeTab === "labs" && (
               <section id="tabpanel-labs" className="panel" role="tabpanel">
                 <div className="panel-header">
@@ -411,7 +374,7 @@ export default function DashboardPage() {
                     <span className="panel-title-icon">🔬</span>
                     Contributing Laboratory Observations
                   </h2>
-                  <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                  <span className="panel-meta">
                     {estimate?.contributing_observations_count ?? 0} records causally visible at query time
                   </span>
                 </div>
@@ -425,7 +388,6 @@ export default function DashboardPage() {
               </section>
             )}
 
-            {/* Tab 4: Provenance */}
             {activeTab === "provenance" && estimate && (
               <section id="tabpanel-provenance" className="panel" role="tabpanel">
                 <div className="panel-header">
@@ -497,19 +459,14 @@ export default function DashboardPage() {
                         : "N/A (Pre-observation period)"}
                     </span>
                   </div>
-                  <div className="provenance-row">
+                  <div className="provenance-row" style={{ borderBottom: 0 }}>
                     <span className="provenance-key">Snapshot Immutability</span>
-                    <span className="provenance-val" style={{ color: "var(--accent-green)" }}>
-                      Deterministic ✓
-                    </span>
+                    <span className="provenance-val" style={{ color: "var(--accent-green)" }}>Deterministic ✓</span>
                   </div>
-                  <div className="disclaimer-text">
-                    {estimate.provenance.research_disclaimer}
-                  </div>
+                  <div className="disclaimer-text">{estimate.provenance.research_disclaimer}</div>
                 </div>
               </section>
             )}
-
           </>
         )}
       </main>

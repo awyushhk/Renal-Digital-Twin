@@ -1,9 +1,12 @@
 "use client";
 
-import type { StateEstimateResponse } from "@/types/api";
+import type { LatentTrajectoryPoint, StateEstimateResponse } from "@/types/api";
+import { clinicalTimeToMs } from "@/lib/clinical_time";
 
 interface LatentStateGaugesProps {
   estimate: StateEstimateResponse;
+  /** Optional real latent trajectory, used only to draw a small trend sparkline. */
+  history?: readonly LatentTrajectoryPoint[];
 }
 
 interface GaugeConfig {
@@ -12,7 +15,6 @@ interface GaugeConfig {
   label: string;
   icon: string;
   color: string;
-  glowColor: string;
   description: string;
   biologyAnchor: string;
 }
@@ -23,8 +25,7 @@ const GAUGE_CONFIGS: GaugeConfig[] = [
     sdKey: "filtration_sd",
     label: "Filtration score",
     icon: "🫀",
-    color: "var(--accent-cyan)",
-    glowColor: "rgba(0,212,255,0.25)",
+    color: "#2563eb",
     description: "Glomerular clearance latent score (z-score)",
     biologyAnchor: "Observed primarily via serum creatinine & BUN",
   },
@@ -33,8 +34,7 @@ const GAUGE_CONFIGS: GaugeConfig[] = [
     sdKey: "tubular_sd",
     label: "Tubular / acid-base score",
     icon: "⚡",
-    color: "var(--accent-violet)",
-    glowColor: "rgba(168,85,247,0.25)",
+    color: "#7c3aed",
     description: "Electrolyte handling & acid-base stress score (z-score)",
     biologyAnchor: "Observed via potassium, sodium & bicarbonate",
   },
@@ -43,19 +43,47 @@ const GAUGE_CONFIGS: GaugeConfig[] = [
     sdKey: "workload_sd",
     label: "Workload / Avidity Proxy",
     icon: "📈",
-    color: "var(--accent-amber)",
-    glowColor: "rgba(245,158,11,0.25)",
+    color: "#d97706",
     description: "Neurohormonal / prerenal workload proxy (z-score)",
     biologyAnchor: "Observed via BUN, sodium & glucose",
   },
 ];
 
-/** Map a z-score in [-4, +4] to a 0–100 bar fill percentage. */
+const Z_RANGE = 4;
+
+/** Map a z-score in [-4, +4] to a 0–100 position. */
 function zToPercent(z: number): number {
-  return Math.min(100, Math.max(0, ((z + 4) / 8) * 100));
+  return Math.min(100, Math.max(0, ((z + Z_RANGE) / (2 * Z_RANGE)) * 100));
 }
 
-export default function LatentStateGauges({ estimate }: LatentStateGaugesProps) {
+function Sparkline({ values, color, id }: { values: number[]; color: string; id: string }) {
+  if (values.length < 2) return null;
+  const w = 120;
+  const h = 44;
+  const pad = 4;
+  const x = (i: number) => pad + (i / (values.length - 1)) * (w - pad * 2);
+  const y = (v: number) => {
+    const clamped = Math.max(-Z_RANGE, Math.min(Z_RANGE, v));
+    return h - pad - ((clamped + Z_RANGE) / (2 * Z_RANGE)) * (h - pad * 2);
+  };
+  const line = values.map((v, i) => `${i === 0 ? "M" : "L"} ${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(" ");
+  const area = `${line} L ${x(values.length - 1).toFixed(1)} ${h - pad} L ${x(0).toFixed(1)} ${h - pad} Z`;
+  return (
+    <svg className="gauge-spark" viewBox={`0 0 ${w} ${h}`} aria-hidden="true">
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${id})`} />
+      <path d={line} fill="none" stroke={color} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
+      <circle cx={x(values.length - 1)} cy={y(values[values.length - 1])} r="3" fill={color} />
+    </svg>
+  );
+}
+
+export default function LatentStateGauges({ estimate, history = [] }: LatentStateGaugesProps) {
   const {
     filtered_latent_states: fls,
     conditional_uncertainty_sd: sd,
@@ -63,39 +91,29 @@ export default function LatentStateGauges({ estimate }: LatentStateGaugesProps) 
     contributing_observations_count: obsCount,
     initialization_status: initStatus,
     eligibility_explanation: explanation,
-    hours_since_last_observation: hoursSince,
   } = estimate;
 
   const isUninitialized = obsCount === 0 || initStatus === "UNINITIALIZED_PRIOR_STATE";
 
+  // Recent real estimates up to the query time (display only).
+  const queryMs = clinicalTimeToMs(estimate.query_time);
+  const recent = history
+    .filter((p) => Number.isNaN(queryMs) || clinicalTimeToMs(p.charttime) <= queryMs)
+    .slice(-30);
+
   return (
     <>
-      {/* ── Uninitialized / No Observations Explicit Banner ── */}
       {isUninitialized && (
-        <div
-          id="no-observations-alert"
-          style={{
-            padding: "16px 20px",
-            background: "rgba(245, 158, 11, 0.08)",
-            border: "1px solid rgba(245, 158, 11, 0.35)",
-            borderRadius: "var(--radius-md)",
-            marginBottom: 20,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-            <span style={{ fontSize: 20 }}>⚠</span>
-            <div style={{ fontWeight: 700, color: "var(--accent-amber)", fontSize: 14 }}>
-              NO ELIGIBLE OBSERVATIONS AT QUERY TIME
-            </div>
-          </div>
-          <div style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+        <div id="no-observations-alert" className="uninit-alert">
+          <div className="uninit-alert-title">⚠ NO ELIGIBLE OBSERVATIONS AT QUERY TIME</div>
+          <div className="uninit-alert-body">
             {explanation ||
               `The selected query time precedes any eligible observations for this patient. Under strict causality, the filter has not performed any measurement updates.`}
           </div>
-          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 8 }}>
-            Status: <code style={{ color: "var(--accent-amber)" }}>UNINITIALIZED_PRIOR_STATE</code> ·
-            Values displayed below represent the <strong>unconditioned population prior mean (0.000)</strong> with
-            asymptotic stationary uncertainty, NOT patient-specific filtered estimates.
+          <div className="uninit-alert-foot">
+            Status: <code style={{ color: "var(--accent-amber)" }}>UNINITIALIZED_PRIOR_STATE</code> · Values below
+            represent the <strong>unconditioned population prior mean (0.000)</strong> with asymptotic stationary
+            uncertainty, NOT patient-specific filtered estimates.
           </div>
         </div>
       )}
@@ -109,82 +127,73 @@ export default function LatentStateGauges({ estimate }: LatentStateGaugesProps) 
         </details>
       </div>
 
-      {/* ── Latent state gauges ── */}
       <div className="gauges-grid">
         {GAUGE_CONFIGS.map((cfg) => {
           const value = fls[cfg.key];
           const sdVal = sd[cfg.sdKey];
           const pct = zToPercent(value);
+          const lo = zToPercent(value - sdVal);
+          const hi = zToPercent(value + sdVal);
+          const fillColor = isUninitialized ? "#c3cbdc" : cfg.color;
 
           return (
             <div
               key={cfg.key}
               id={`gauge-${cfg.key}`}
               className="gauge-card"
-              style={{
-                borderColor: isUninitialized ? "rgba(255, 255, 255, 0.1)" : "var(--border-subtle)",
-                borderStyle: isUninitialized ? "dashed" : "solid",
-              }}
-              title={`${cfg.description}`}
+              style={{ borderStyle: isUninitialized ? "dashed" : "solid" }}
+              title={cfg.description}
             >
               <div className="gauge-header">
+                <span className="gauge-icon" aria-hidden="true">{cfg.icon}</span>
                 <div>
                   <div className="gauge-name">{cfg.label}</div>
+                  <div className="gauge-sub">z-score vs. MIMIC-IV cohort</div>
                 </div>
-                <span className="gauge-icon" aria-hidden="true">{cfg.icon}</span>
               </div>
 
+              <div className="gauge-body">
+                <div>
+                  <div className="gauge-value-row">
+                    <span className="gauge-value" style={{ color: isUninitialized ? "var(--text-muted)" : cfg.color }}>
+                      {value >= 0 ? "+" : ""}
+                      {value.toFixed(2)}
+                    </span>
+                    <span className="gauge-unit">z</span>
+                  </div>
+                  <div className="gauge-ci">Estimated uncertainty: ±{sdVal.toFixed(2)} SD</div>
+                </div>
+                {!isUninitialized && <Sparkline values={recent.map((p) => p[cfg.key])} color={cfg.color} id={`spark-${cfg.key}`} />}
+              </div>
+
+              {/* Diverging bar: fills from the cohort zero line toward the estimate; band = ±1 SD */}
               <div>
-                <div className="gauge-value-row">
-                  <span
-                    className="gauge-value"
-                    style={{ color: isUninitialized ? "var(--text-muted)" : cfg.color }}
-                  >
-                    {value >= 0 ? "+" : ""}
-                    {value.toFixed(2)}
-                  </span>
-                  <span className="gauge-unit">z-score</span>
-                </div>
-
-                <div className="gauge-ci">
-                  Estimated uncertainty: ±{sdVal.toFixed(2)} SD
-                </div>
-
-                {/* Progress bar with centered zero-reference marker */}
                 <div className="gauge-track">
+                  <div className="gauge-band" style={{ left: `${lo}%`, width: `${Math.max(0, hi - lo)}%`, background: fillColor }} />
                   <div
                     className="gauge-fill"
-                    style={{
-                      width: `${pct}%`,
-                      background: isUninitialized
-                        ? "rgba(255, 255, 255, 0.15)"
-                        : `linear-gradient(90deg, ${cfg.color}88, ${cfg.color})`,
-                    }}
+                    style={{ left: `${Math.min(50, pct)}%`, width: `${Math.abs(pct - 50)}%`, background: fillColor }}
                   />
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: "50%",
-                      top: 0,
-                      bottom: 0,
-                      width: 2,
-                      background: "rgba(255, 255, 255, 0.35)",
-                      zIndex: 2,
-                    }}
-                    title="Cohort Population Zero Reference"
-                  />
+                  <div className="gauge-zero" title="Cohort Population Zero Reference" />
                 </div>
-                <details className="score-details">
-                  <summary>Details</summary>
-                  <p>{cfg.biologyAnchor}. 1 SD range: [{Math.max(-4, value - sdVal).toFixed(2)}, {Math.min(4, value + sdVal).toFixed(2)}]; 2 SD range: [{Math.max(-4, value - 2 * sdVal).toFixed(2)}, {Math.min(4, value + 2 * sdVal).toFixed(2)}].</p>
-                </details>
+                <div className="gauge-scale">
+                  <span>−{Z_RANGE}</span>
+                  <span>0</span>
+                  <span>+{Z_RANGE}</span>
+                </div>
               </div>
+
+              <details className="score-details">
+                <summary>Details</summary>
+                <p>
+                  {cfg.biologyAnchor}. 1 SD range: [{Math.max(-Z_RANGE, value - sdVal).toFixed(2)}, {Math.min(Z_RANGE, value + sdVal).toFixed(2)}]; 2 SD range: [{Math.max(-Z_RANGE, value - 2 * sdVal).toFixed(2)}, {Math.min(Z_RANGE, value + 2 * sdVal).toFixed(2)}].
+                </p>
+              </details>
             </div>
           );
         })}
       </div>
 
-      {/* ── Track 2 Derived Empirical Indices ── */}
       <div className="track2-section">
         <div className="track2-title">
           <span>Additional indicators</span>
@@ -192,44 +201,37 @@ export default function LatentStateGauges({ estimate }: LatentStateGaugesProps) 
         </div>
 
         <div className="indices-grid">
-          {/* Trajectory Stability Index */}
           <div className="index-card" id="index-tsi">
             <div className="index-card-header">
               <span className="index-card-name">Trajectory Stability Index (TSI)</span>
               <span className="index-card-icon" aria-hidden="true">🎯</span>
             </div>
             <div className="index-value" style={{ color: "var(--accent-teal)" }}>
-              {idx.trajectory_stability_index !== null
-                ? idx.trajectory_stability_index.toFixed(4)
-                : "—"}
+              {idx.trajectory_stability_index !== null ? idx.trajectory_stability_index.toFixed(4) : "—"}
             </div>
             <div className="index-status"><code style={{ color: "var(--accent-teal)" }}>{idx.trajectory_stability_status}</code></div>
             <details className="index-details"><summary>Details</summary><p>Historical creatinine trajectory statistic, bounded in (0, 1]. It is not a clinical diagnostic confidence score.</p></details>
           </div>
 
-          {/* Derived CKD-EPI 2021 eGFR Proxy */}
           <div className="index-card" id="index-egfr">
             <div className="index-card-header">
               <span className="index-card-name">Creatinine-derived eGFR estimate (CKD-EPI 2021)</span>
               <span className="index-card-icon" aria-hidden="true">🧪</span>
             </div>
-            <div className="index-value" style={{ color: "var(--accent-cyan)" }}>
+            <div className="index-value" style={{ color: "var(--accent-blue)" }}>
               {idx.derived_egfr_ckd_epi !== null ? (
                 <>
                   {idx.derived_egfr_ckd_epi.toFixed(1)}
-                  <span style={{ fontSize: 13, color: "var(--text-muted)", marginLeft: 6 }}>
-                    mL/min/1.73m²
-                  </span>
+                  <span style={{ fontSize: 13, color: "var(--text-muted)", marginLeft: 6, fontWeight: 600 }}>mL/min/1.73m²</span>
                 </>
               ) : (
                 "—"
               )}
             </div>
-            <div className="index-status"><code style={{ color: "var(--accent-cyan)" }}>{idx.derived_egfr_interpretation}</code></div>
+            <div className="index-status"><code style={{ color: "var(--accent-blue)" }}>{idx.derived_egfr_interpretation}</code></div>
             <details className="index-details"><summary>Details</summary><p>CKD-EPI 2021 creatinine-derived calculation from the latest eligible creatinine, age, and sex; not an independent measurement or validation target.</p></details>
           </div>
 
-          {/* Co-temporal BUN/Cr Ratio */}
           <div className="index-card" id="index-bun-cr">
             <div className="index-card-header">
               <span className="index-card-name">Co-temporal BUN / Creatinine</span>
@@ -239,9 +241,7 @@ export default function LatentStateGauges({ estimate }: LatentStateGaugesProps) 
               {idx.cotemporal_bun_cr_ratio !== null ? (
                 <>
                   {idx.cotemporal_bun_cr_ratio.toFixed(1)}
-                  <span style={{ fontSize: 13, color: "var(--text-muted)", marginLeft: 6 }}>
-                    mass ratio
-                  </span>
+                  <span style={{ fontSize: 13, color: "var(--text-muted)", marginLeft: 6, fontWeight: 600 }}>mass ratio</span>
                 </>
               ) : (
                 "—"

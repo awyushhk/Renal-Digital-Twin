@@ -21,14 +21,21 @@ interface PatientGraphsProps {
   onSelectTime?: (isoString: string) => void;
 }
 
-const ANALYTE_COLORS: Record<string, { stroke: string; fill: string; unit: string; label: string }> = {
-  creatinine: { stroke: "#00d4ff", fill: "rgba(0,212,255,0.15)", unit: "mg/dL", label: "Creatinine" },
-  urea_nitrogen: { stroke: "#3b82f6", fill: "rgba(59,130,246,0.15)", unit: "mg/dL", label: "BUN" },
-  potassium: { stroke: "#a855f7", fill: "rgba(168,85,247,0.15)", unit: "mEq/L", label: "Potassium" },
-  sodium: { stroke: "#00f5c4", fill: "rgba(0,245,196,0.15)", unit: "mEq/L", label: "Sodium" },
-  bicarbonate: { stroke: "#10b981", fill: "rgba(16,185,129,0.15)", unit: "mEq/L", label: "Bicarbonate" },
-  glucose: { stroke: "#f59e0b", fill: "rgba(245,158,11,0.15)", unit: "mg/dL", label: "Glucose" },
+const ANALYTE_COLORS: Record<string, { stroke: string; unit: string; label: string }> = {
+  creatinine: { stroke: "#2563eb", unit: "mg/dL", label: "Creatinine" },
+  urea_nitrogen: { stroke: "#0891b2", unit: "mg/dL", label: "BUN" },
+  potassium: { stroke: "#7c3aed", unit: "mEq/L", label: "Potassium" },
+  sodium: { stroke: "#0d9488", unit: "mEq/L", label: "Sodium" },
+  bicarbonate: { stroke: "#16a34a", unit: "mEq/L", label: "Bicarbonate" },
+  glucose: { stroke: "#d97706", unit: "mg/dL", label: "Glucose" },
 };
+
+// Light-theme chart tokens
+const GRID = "rgba(15,27,61,0.07)";
+const AXIS = "rgba(15,27,61,0.16)";
+const MUTED = "#8591ab";
+const QUERY = "#e11d48";
+const REPORTED = "#0d9488";
 
 export default function PatientGraphs({
   observations,
@@ -70,7 +77,6 @@ export default function PatientGraphs({
     const min = Math.min(...valid);
     const max = Math.max(...valid);
     const span = max - min || 3600000;
-    // Add small 2% padding on edges
     return {
       tMin: min - span * 0.02,
       tMax: max + span * 0.02,
@@ -80,6 +86,21 @@ export default function PatientGraphs({
       axisEndLabel: formatClinicalTimestampFromMs(max),
     };
   }, [observations, latentPoints, queryTime]);
+
+  // Group observations by analyte (hook kept above the early return to respect the rules of hooks)
+  const analyteGroups = useMemo(() => {
+    const map: Record<string, ObservationRecord[]> = {};
+    Object.keys(ANALYTE_COLORS).forEach((k) => (map[k] = []));
+    observations.forEach((o) => {
+      if (map[o.analyte_name]) {
+        map[o.analyte_name].push(o);
+      }
+    });
+    Object.keys(map).forEach((k) => {
+      map[k].sort((a, b) => clinicalTimeToMs(a.charttime) - clinicalTimeToMs(b.charttime));
+    });
+    return map;
+  }, [observations]);
 
   const timeToX = (tStr: string, width: number, padLeft = 50, padRight = 20) => {
     const ms = clinicalTimeToMs(tStr);
@@ -105,22 +126,6 @@ export default function PatientGraphs({
     );
   }
 
-  // Group observations by analyte
-  const analyteGroups = useMemo(() => {
-    const map: Record<string, ObservationRecord[]> = {};
-    Object.keys(ANALYTE_COLORS).forEach((k) => (map[k] = []));
-    observations.forEach((o) => {
-      if (map[o.analyte_name]) {
-        map[o.analyte_name].push(o);
-      }
-    });
-    // Sort each group chronologically
-    Object.keys(map).forEach((k) => {
-      map[k].sort((a, b) => clinicalTimeToMs(a.charttime) - clinicalTimeToMs(b.charttime));
-    });
-    return map;
-  }, [observations]);
-
   const svgWidth = 960;
   const graphAHeight = 250;
   const graphBHeight = 260;
@@ -128,105 +133,78 @@ export default function PatientGraphs({
 
   const qX = msToX(queryMs, svgWidth);
 
+  const showTooltip = (
+    e: React.MouseEvent<SVGCircleElement>,
+    title: string,
+    lines: string[]
+  ) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setHoveredPoint({ x: rect.x + 8, y: rect.y - 10, title, lines });
+  };
+
   return (
-    <section className="panel" aria-label="Longitudinal patient graphs" style={{ marginTop: 24 }}>
-      {/* ── Section Header & Sub-Navigation ── */}
-      <div className="panel-header" style={{ flexWrap: "wrap", gap: 12 }}>
+    <section className="panel" aria-label="Longitudinal patient graphs">
+      <div className="panel-header">
         <div>
-          <h2 className="panel-title" style={{ fontSize: 15 }}>
+          <h2 className="panel-title">
             <span className="panel-title-icon">📈</span>
             Patient Timeline
           </h2>
-          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
+          <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4, marginLeft: 44 }}>
             Observed labs, model estimates, and reporting delays · hospital local clock
           </div>
         </div>
 
-        {/* View Tabs */}
         <div className="filter-row" style={{ margin: 0 }}>
-          <button
-            type="button"
-            className={`filter-btn ${activeTab === "all" ? "active" : ""}`}
-            onClick={() => setActiveTab("all")}
-          >
-            All charts
-          </button>
-          <button
-            type="button"
-            className={`filter-btn ${activeTab === "labs" ? "active" : ""}`}
-            onClick={() => setActiveTab("labs")}
-          >
-            Labs
-          </button>
-          <button
-            type="button"
-            className={`filter-btn ${activeTab === "latent" ? "active" : ""}`}
-            onClick={() => setActiveTab("latent")}
-          >
-            State estimates
-          </button>
-          <button
-            type="button"
-            className={`filter-btn ${activeTab === "availability" ? "active" : ""}`}
-            onClick={() => setActiveTab("availability")}
-          >
-            Reporting time
-          </button>
+          {([
+            ["all", "All charts"],
+            ["labs", "Labs"],
+            ["latent", "State estimates"],
+            ["availability", "Reporting time"],
+          ] as const).map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              className={`filter-btn ${activeTab === key ? "active" : ""}`}
+              onClick={() => setActiveTab(key)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* ── Query Line Legend ── */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 12,
-          padding: "8px 12px",
-          background: "rgba(255, 255, 255, 0.02)",
-          borderRadius: "var(--radius-sm)",
-          border: "1px solid rgba(255, 255, 255, 0.06)",
-          fontSize: 11,
-          marginBottom: 16,
-        }}
-      >
+      {/* Query line legend */}
+      <div className="chart-legend-bar">
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 14, height: 2, background: "#ef4444", borderTop: "2px dashed #ef4444" }} />
+          <div style={{ width: 16, borderTop: `2px dashed ${QUERY}` }} />
           <span style={{ color: "var(--text-secondary)" }}>
             Query time:{" "}
-            <strong style={{ color: "#ef4444", fontFamily: "monospace" }}>
+            <strong style={{ color: QUERY, fontFamily: "var(--font-mono)" }}>
               {formatClinicalTimestamp(queryTime)}
             </strong>{" "}
             ({timelineMode.toLowerCase()} view)
           </span>
         </div>
-        <div style={{ fontSize: 10, color: "var(--text-muted)" }}>
-          Hover a point for its value and timestamp.
-        </div>
+        <div style={{ fontSize: 10, color: "var(--text-muted)" }}>Hover a point for its value and timestamp.</div>
       </div>
 
-      {/* ─────────────────────────────────────────────────────────────────── */}
-      {/* ── GRAPH A: Laboratory Trajectories ── */}
-      {/* ─────────────────────────────────────────────────────────────────── */}
+      {/* ── GRAPH A: Laboratory trajectories ── */}
       {(activeTab === "all" || activeTab === "labs") && (
         <div style={{ marginBottom: 24 }}>
           <div className="graph-heading">
             <div>
-              <span style={{ fontWeight: 600, fontSize: 13, color: "var(--text-primary)" }}>
-                Laboratory results
-              </span>
-              <span style={{ fontSize: 11, color: "var(--text-muted)", marginLeft: 8 }}>
+              <span className="graph-title">Laboratory results</span>
+              <span className="graph-hint">
                 Each dot is an observed result; lines never bridge gaps longer than 14 days.
               </span>
             </div>
 
-            {/* Analyte filter buttons */}
             <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
               <button
                 type="button"
                 className={`filter-btn ${selectedAnalyte === "all" ? "active" : ""}`}
-                style={{ fontSize: 10, padding: "2px 6px" }}
+                style={{ fontSize: 10, padding: "3px 9px" }}
                 onClick={() => setSelectedAnalyte("all")}
               >
                 All (scaled)
@@ -236,11 +214,7 @@ export default function PatientGraphs({
                   key={key}
                   type="button"
                   className={`filter-btn ${selectedAnalyte === key ? "active" : ""}`}
-                  style={{
-                    fontSize: 10,
-                    padding: "2px 6px",
-                    color: selectedAnalyte === key ? "#fff" : cfg.stroke,
-                  }}
+                  style={{ fontSize: 10, padding: "3px 9px", color: cfg.stroke }}
                   onClick={() => setSelectedAnalyte(key)}
                 >
                   {cfg.label} ({analyteGroups[key]?.length || 0})
@@ -250,30 +224,14 @@ export default function PatientGraphs({
           </div>
 
           <div className="clinical-chart-scroll">
-            <svg
-              viewBox={`0 0 ${svgWidth} ${graphAHeight}`}
-              className="clinical-chart"
-            >
-              {/* Background grid lines */}
-              <line x1="50" y1="20" x2={svgWidth - 20} y2="20" stroke="rgba(255,255,255,0.06)" />
-              <line x1="50" y1={graphAHeight / 2} x2={svgWidth - 20} y2={graphAHeight / 2} stroke="rgba(255,255,255,0.06)" />
-              <line x1="50" y1={graphAHeight - 25} x2={svgWidth - 20} y2={graphAHeight - 25} stroke="rgba(255,255,255,0.12)" />
+            <svg viewBox={`0 0 ${svgWidth} ${graphAHeight}`} className="clinical-chart">
+              <line x1="50" y1="20" x2={svgWidth - 20} y2="20" stroke={GRID} />
+              <line x1="50" y1={graphAHeight / 2} x2={svgWidth - 20} y2={graphAHeight / 2} stroke={GRID} />
+              <line x1="50" y1={graphAHeight - 25} x2={svgWidth - 20} y2={graphAHeight - 25} stroke={AXIS} />
 
-              {/* Causal query gate vertical line */}
-              <line
-                x1={qX}
-                y1="10"
-                x2={qX}
-                y2={graphAHeight - 25}
-                stroke="#ef4444"
-                strokeWidth="1.5"
-                strokeDasharray="4 3"
-              />
-              <text x={Math.min(qX + 4, svgWidth - 54)} y="18" fill="#ef4444" fontSize="11">
-                Query
-              </text>
+              <line x1={qX} y1="10" x2={qX} y2={graphAHeight - 25} stroke={QUERY} strokeWidth="1.5" strokeDasharray="4 3" />
+              <text x={Math.min(qX + 4, svgWidth - 54)} y="18" fill={QUERY} fontSize="11">Query</text>
 
-              {/* Render each analyte's points */}
               {Object.entries(analyteGroups).map(([analyte, records]) => {
                 if (records.length === 0) return null;
                 if (selectedAnalyte !== "all" && selectedAnalyte !== analyte) return null;
@@ -290,7 +248,7 @@ export default function PatientGraphs({
                   return graphAHeight - 35 - ratio * (graphAHeight - 65);
                 };
 
-                // Build line segments between points that are close in time (< 7 days)
+                // Line segments: break the path across gaps longer than 14 days
                 const segments: string[] = [];
                 for (let i = 0; i < records.length; i++) {
                   const x = timeToX(records[i].charttime, svgWidth);
@@ -298,34 +256,19 @@ export default function PatientGraphs({
                   if (i === 0) {
                     segments.push(`M ${x} ${y}`);
                   } else {
-                    const prevX = timeToX(records[i - 1].charttime, svgWidth);
                     const dtDays = (clinicalTimeToMs(records[i].charttime) - clinicalTimeToMs(records[i - 1].charttime)) / 86400000;
-                    if (dtDays <= 14) {
-                      segments.push(`L ${x} ${y}`);
-                    } else {
-                      segments.push(`M ${x} ${y}`);
-                    }
+                    segments.push(dtDays <= 14 ? `L ${x} ${y}` : `M ${x} ${y}`);
                   }
                 }
 
                 return (
                   <g key={analyte}>
-                    {/* Trajectory path */}
-                    <path
-                      d={segments.join(" ")}
-                      fill="none"
-                      stroke={cfg.stroke}
-                      strokeWidth="1.5"
-                      strokeOpacity="0.65"
-                    />
-
-                    {/* Individual points */}
+                    <path d={segments.join(" ")} fill="none" stroke={cfg.stroke} strokeWidth="1.8" strokeOpacity="0.7" strokeLinejoin="round" />
                     {records.map((r, i) => {
                       const x = timeToX(r.charttime, svgWidth);
                       const y = valToY(r.valuenum_effective);
                       const isFutureStoretime =
-                        timelineMode === "OPERATIONAL" &&
-                        clinicalTimeToMs(r.storetime) > queryMs;
+                        timelineMode === "OPERATIONAL" && clinicalTimeToMs(r.storetime) > queryMs;
 
                       return (
                         <circle
@@ -333,27 +276,21 @@ export default function PatientGraphs({
                           cx={x}
                           cy={y}
                           r={isFutureStoretime ? 3 : 4}
-                          fill={isFutureStoretime ? "none" : cfg.stroke}
+                          fill={isFutureStoretime ? "#fff" : cfg.stroke}
                           stroke={cfg.stroke}
                           strokeWidth={isFutureStoretime ? 1.5 : 1}
                           strokeDasharray={isFutureStoretime ? "2 1" : undefined}
-                          opacity={isFutureStoretime ? 0.45 : 0.9}
+                          opacity={isFutureStoretime ? 0.6 : 0.95}
                           style={{ cursor: "pointer" }}
-                          onMouseEnter={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            setHoveredPoint({
-                              x: rect.x + 8,
-                              y: rect.y - 10,
-                              title: `${cfg.label}: ${r.valuenum_effective} ${r.unit_harmonized}`,
-                              lines: [
-                                `Charttime: ${formatClinicalTimestamp(r.charttime)}`,
-                                `Storetime: ${r.storetime ? formatClinicalTimestamp(r.storetime) : "N/A"}`,
-                                `Delay: +${r.reporting_delay_hours.toFixed(2)}h`,
-                                `Arbitration: ${r.arbitration_role}`,
-                                isFutureStoretime ? "⚠ Causally masked in Operational mode" : "✓ Visible at query time",
-                              ],
-                            });
-                          }}
+                          onMouseEnter={(e) =>
+                            showTooltip(e, `${cfg.label}: ${r.valuenum_effective} ${r.unit_harmonized}`, [
+                              `Charttime: ${formatClinicalTimestamp(r.charttime)}`,
+                              `Storetime: ${r.storetime ? formatClinicalTimestamp(r.storetime) : "N/A"}`,
+                              `Delay: +${r.reporting_delay_hours.toFixed(2)}h`,
+                              `Arbitration: ${r.arbitration_role}`,
+                              isFutureStoretime ? "⚠ Causally masked in Operational mode" : "✓ Visible at query time",
+                            ])
+                          }
                           onMouseLeave={() => setHoveredPoint(null)}
                           onClick={() => onSelectTime && onSelectTime(r.charttime)}
                         />
@@ -364,83 +301,45 @@ export default function PatientGraphs({
               })}
 
               {selectedAnalyte === "all" && (
-                <text x="50" y="18" fill="var(--text-muted)" fontSize="10">
+                <text x="50" y="18" fill={MUTED} fontSize="10">
                   Each analyte is scaled to its own observed range; select one analyte for values.
                 </text>
               )}
-              {/* Time axis label */}
-              <text x="50" y={graphAHeight - 8} fill="var(--text-muted)" fontSize="11">
-                {axisStartLabel.slice(0, 10)}
-              </text>
-              <text x={svgWidth - 90} y={graphAHeight - 8} fill="var(--text-muted)" fontSize="11">
-                {axisEndLabel.slice(0, 10)}
-              </text>
+              <text x="50" y={graphAHeight - 8} fill={MUTED} fontSize="11">{axisStartLabel.slice(0, 10)}</text>
+              <text x={svgWidth - 90} y={graphAHeight - 8} fill={MUTED} fontSize="11">{axisEndLabel.slice(0, 10)}</text>
             </svg>
           </div>
         </div>
       )}
 
-      {/* ─────────────────────────────────────────────────────────────────── */}
-      {/* ── GRAPH B: Latent-State Trajectories ── */}
-      {/* ─────────────────────────────────────────────────────────────────── */}
+      {/* ── GRAPH B: Latent-state trajectories ── */}
       {(activeTab === "all" || activeTab === "latent") && (
         <div style={{ marginBottom: 24 }}>
           <div className="graph-heading">
             <div>
-              <span style={{ fontWeight: 600, fontSize: 13, color: "var(--text-primary)" }}>
-                Estimated state trajectories
-              </span>
-              <span style={{ fontSize: 11, color: "var(--text-muted)", marginLeft: 8 }}>
+              <span className="graph-title">Estimated state trajectories</span>
+              <span className="graph-hint">
                 Model estimates at observation epochs; gaps longer than 14 days are not connected.
               </span>
             </div>
-            <div style={{ display: "flex", gap: 12, fontSize: 10 }}>
-              <span style={{ color: "var(--accent-cyan)" }}>● Filtration</span>
-              <span style={{ color: "var(--accent-violet)" }}>● Tubular / acid-base</span>
-              <span style={{ color: "var(--accent-amber)" }}>● Workload / avidity</span>
+            <div style={{ display: "flex", gap: 12, fontSize: 10, fontWeight: 600 }}>
+              <span style={{ color: "#2563eb" }}>● Filtration</span>
+              <span style={{ color: "#7c3aed" }}>● Tubular / acid-base</span>
+              <span style={{ color: "#d97706" }}>● Workload / avidity</span>
             </div>
           </div>
 
           <div className="clinical-chart-scroll">
-            <svg
-              viewBox={`0 0 ${svgWidth} ${graphBHeight}`}
-              className="clinical-chart"
-            >
-              {/* Zero-reference horizontal line */}
-              <line
-                x1="50"
-                y1={graphBHeight / 2}
-                x2={svgWidth - 20}
-                y2={graphBHeight / 2}
-                stroke="rgba(255,255,255,0.2)"
-                strokeDasharray="2 2"
-              />
-              <text x={Math.min(qX + 4, svgWidth - 54)} y="18" fill="#ef4444" fontSize="11">
-                Query
-              </text>
-              <text x="15" y={graphBHeight / 2 + 4} fill="var(--text-muted)" fontSize="11">
-                0.0 z
-              </text>
-              <text x="15" y="24" fill="var(--text-muted)" fontSize="11">
-                +3.0 z
-              </text>
-              <text x="15" y={graphBHeight - 32} fill="var(--text-muted)" fontSize="11">
-                -3.0 z
-              </text>
+            <svg viewBox={`0 0 ${svgWidth} ${graphBHeight}`} className="clinical-chart">
+              <line x1="50" y1={graphBHeight / 2} x2={svgWidth - 20} y2={graphBHeight / 2} stroke={AXIS} strokeDasharray="2 2" />
+              <text x={Math.min(qX + 4, svgWidth - 54)} y="18" fill={QUERY} fontSize="11">Query</text>
+              <text x="15" y={graphBHeight / 2 + 4} fill={MUTED} fontSize="11">0.0 z</text>
+              <text x="15" y="24" fill={MUTED} fontSize="11">+3.0 z</text>
+              <text x="15" y={graphBHeight - 32} fill={MUTED} fontSize="11">-3.0 z</text>
 
-              {/* Causal query gate line */}
-              <line
-                x1={qX}
-                y1="10"
-                x2={qX}
-                y2={graphBHeight - 25}
-                stroke="#ef4444"
-                strokeWidth="1.5"
-                strokeDasharray="4 3"
-              />
+              <line x1={qX} y1="10" x2={qX} y2={graphBHeight - 25} stroke={QUERY} strokeWidth="1.5" strokeDasharray="4 3" />
 
               {latentPoints.length > 0 && (() => {
-                // Map z in [-3, +3] to y
                 const zToY = (z: number) => {
                   const clamped = Math.max(-3, Math.min(3, z));
                   const ratio = (clamped + 3) / 6;
@@ -448,9 +347,9 @@ export default function PatientGraphs({
                 };
 
                 const tracks = [
-                  { key: "filtration_state_z", sdKey: "filtration_sd", color: "#00d4ff", name: "Filtration" },
-                  { key: "tubular_stress_z", sdKey: "tubular_sd", color: "#a855f7", name: "Tubular" },
-                  { key: "workload_avidity_z", sdKey: "workload_sd", color: "#f59e0b", name: "Workload" },
+                  { key: "filtration_state_z", sdKey: "filtration_sd", color: "#2563eb", name: "Filtration" },
+                  { key: "tubular_stress_z", sdKey: "tubular_sd", color: "#7c3aed", name: "Tubular" },
+                  { key: "workload_avidity_z", sdKey: "workload_sd", color: "#d97706", name: "Workload" },
                 ] as const;
 
                 return tracks.map((tr) => {
@@ -460,17 +359,19 @@ export default function PatientGraphs({
                     raw: p,
                   }));
 
-                  const linePath = pts.map((p, i) => {
-                    const previous = latentPoints[i - 1];
-                    const gapDays = previous
-                      ? (clinicalTimeToMs(p.raw.charttime) - clinicalTimeToMs(previous.charttime)) / 86400000
-                      : 0;
-                    return `${i === 0 || gapDays > 14 ? "M" : "L"} ${p.x} ${p.y}`;
-                  }).join(" ");
+                  const linePath = pts
+                    .map((p, i) => {
+                      const previous = latentPoints[i - 1];
+                      const gapDays = previous
+                        ? (clinicalTimeToMs(p.raw.charttime) - clinicalTimeToMs(previous.charttime)) / 86400000
+                        : 0;
+                      return `${i === 0 || gapDays > 14 ? "M" : "L"} ${p.x} ${p.y}`;
+                    })
+                    .join(" ");
 
                   return (
                     <g key={tr.key}>
-                      <path d={linePath} fill="none" stroke={tr.color} strokeWidth="1.8" />
+                      <path d={linePath} fill="none" stroke={tr.color} strokeWidth="1.8" strokeLinejoin="round" />
                       {pts.map((p, i) => (
                         <circle
                           key={i}
@@ -478,22 +379,20 @@ export default function PatientGraphs({
                           cy={p.y}
                           r="3"
                           fill={tr.color}
-                          opacity="0.85"
+                          opacity="0.9"
                           style={{ cursor: "pointer" }}
-                          onMouseEnter={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            setHoveredPoint({
-                              x: rect.x + 8,
-                              y: rect.y - 10,
-                              title: `${tr.name} State: ${p.raw[tr.key] >= 0 ? "+" : ""}${p.raw[tr.key].toFixed(3)} z`,
-                              lines: [
+                          onMouseEnter={(e) =>
+                            showTooltip(
+                              e,
+                              `${tr.name} State: ${p.raw[tr.key] >= 0 ? "+" : ""}${p.raw[tr.key].toFixed(3)} z`,
+                              [
                                 `Epoch: ${formatClinicalTimestamp(p.raw.charttime)}`,
                                 `Conditional SD: ±${p.raw[tr.sdKey].toFixed(3)}`,
                                 `Observed: ${p.raw.observed_analytes.join(", ") || "Predict-only"}`,
                                 `dt: +${p.raw.dt_hours}h`,
-                              ],
-                            });
-                          }}
+                              ]
+                            )
+                          }
                           onMouseLeave={() => setHoveredPoint(null)}
                         />
                       ))}
@@ -502,61 +401,38 @@ export default function PatientGraphs({
                 });
               })()}
 
-              <text x="50" y={graphBHeight - 8} fill="var(--text-muted)" fontSize="11">
-                {axisStartLabel.slice(0, 10)}
-              </text>
-              <text x={svgWidth - 90} y={graphBHeight - 8} fill="var(--text-muted)" fontSize="11">
-                {axisEndLabel.slice(0, 10)}
-              </text>
+              <text x="50" y={graphBHeight - 8} fill={MUTED} fontSize="11">{axisStartLabel.slice(0, 10)}</text>
+              <text x={svgWidth - 90} y={graphBHeight - 8} fill={MUTED} fontSize="11">{axisEndLabel.slice(0, 10)}</text>
             </svg>
           </div>
         </div>
       )}
 
-      {/* ─────────────────────────────────────────────────────────────────── */}
-      {/* ── GRAPH C: Observation and Availability Timeline ── */}
-      {/* ─────────────────────────────────────────────────────────────────── */}
+      {/* ── GRAPH C: Collection vs reporting time ── */}
       {(activeTab === "all" || activeTab === "availability") && (
         <div>
           <div className="graph-heading">
             <div>
-              <span style={{ fontWeight: 600, fontSize: 13, color: "var(--text-primary)" }}>
-                Lab collection vs reporting time
-              </span>
-              <span style={{ fontSize: 11, color: "var(--text-muted)", marginLeft: 8 }}>
+              <span className="graph-title">Lab collection vs reporting time</span>
+              <span className="graph-hint">
                 A line shows the delay between collection and when the result entered the record.
               </span>
             </div>
-            <div style={{ display: "flex", gap: 10, fontSize: 10 }}>
-              <span style={{ color: "var(--accent-teal)" }}>● Reported by query time</span>
-              <span style={{ color: "#ef4444" }}>○ Reported after query time</span>
+            <div style={{ display: "flex", gap: 10, fontSize: 10, fontWeight: 600 }}>
+              <span style={{ color: REPORTED }}>● Reported by query time</span>
+              <span style={{ color: QUERY }}>○ Reported after query time</span>
             </div>
           </div>
 
           <div className="clinical-chart-scroll">
-            <svg
-              viewBox={`0 0 ${svgWidth} ${graphCHeight}`}
-              className="clinical-chart"
-            >
-              <line x1="50" y1="20" x2={svgWidth - 20} y2="20" stroke="rgba(255,255,255,0.06)" />
-              <line x1="50" y1={graphCHeight / 2} x2={svgWidth - 20} y2={graphCHeight / 2} stroke="rgba(255,255,255,0.06)" />
-              <line x1="50" y1={graphCHeight - 25} x2={svgWidth - 20} y2={graphCHeight - 25} stroke="rgba(255,255,255,0.12)" />
+            <svg viewBox={`0 0 ${svgWidth} ${graphCHeight}`} className="clinical-chart">
+              <line x1="50" y1="20" x2={svgWidth - 20} y2="20" stroke={GRID} />
+              <line x1="50" y1={graphCHeight / 2} x2={svgWidth - 20} y2={graphCHeight / 2} stroke={GRID} />
+              <line x1="50" y1={graphCHeight - 25} x2={svgWidth - 20} y2={graphCHeight - 25} stroke={AXIS} />
 
-              {/* Causal query gate line */}
-              <line
-                x1={qX}
-                y1="10"
-                x2={qX}
-                y2={graphCHeight - 25}
-                stroke="#ef4444"
-                strokeWidth="1.5"
-                strokeDasharray="4 3"
-              />
-              <text x={Math.min(qX + 4, svgWidth - 54)} y="18" fill="#ef4444" fontSize="11">
-                Query
-              </text>
+              <line x1={qX} y1="10" x2={qX} y2={graphCHeight - 25} stroke={QUERY} strokeWidth="1.5" strokeDasharray="4 3" />
+              <text x={Math.min(qX + 4, svgWidth - 54)} y="18" fill={QUERY} fontSize="11">Query</text>
 
-              {/* Render horizontal delay lines for distinct draw epochs */}
               {observations.slice(0, 120).map((obs, i) => {
                 const x1 = timeToX(obs.charttime, svgWidth);
                 const hasValidStoretime = Boolean(obs.storetime) && Number.isFinite(clinicalTimeToMs(obs.storetime));
@@ -564,59 +440,34 @@ export default function PatientGraphs({
                 const rowY = 30 + (i % 8) * 12;
 
                 const isMaskedInOps =
-                  timelineMode === "OPERATIONAL" &&
-                  hasValidStoretime &&
-                  clinicalTimeToMs(obs.storetime) > queryMs;
+                  timelineMode === "OPERATIONAL" && hasValidStoretime && clinicalTimeToMs(obs.storetime) > queryMs;
 
-                const strokeColor = isMaskedInOps ? "#ef4444" : "#00f5c4";
+                const strokeColor = isMaskedInOps ? QUERY : REPORTED;
 
                 return (
                   <g key={i}>
-                    {/* Connecting delay bar */}
                     {x2 > x1 && (
-                      <line
-                        x1={x1}
-                        y1={rowY}
-                        x2={x2}
-                        y2={rowY}
-                        stroke={strokeColor}
-                        strokeWidth="1.5"
-                        opacity={isMaskedInOps ? 0.35 : 0.6}
-                      />
+                      <line x1={x1} y1={rowY} x2={x2} y2={rowY} stroke={strokeColor} strokeWidth="1.5" opacity={isMaskedInOps ? 0.4 : 0.65} />
                     )}
-                    {/* Specimen draw point */}
-                    <circle
-                      cx={x1}
-                      cy={rowY}
-                      r="2.5"
-                      fill={strokeColor}
-                      opacity={isMaskedInOps ? 0.5 : 0.85}
-                    />
-                    {/* Storetime filed point */}
+                    <circle cx={x1} cy={rowY} r="2.5" fill={strokeColor} opacity={isMaskedInOps ? 0.55 : 0.9} />
                     {hasValidStoretime && (
                       <circle
                         cx={x2}
                         cy={rowY}
                         r="3.5"
-                        fill={isMaskedInOps ? "none" : strokeColor}
+                        fill={isMaskedInOps ? "#fff" : strokeColor}
                         stroke={strokeColor}
                         strokeWidth="1.2"
-                        onMouseEnter={(e) => {
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          setHoveredPoint({
-                            x: rect.x + 8,
-                            y: rect.y - 10,
-                            title: `${obs.analyte_name.toUpperCase()} Draw`,
-                            lines: [
-                              `Charttime (drawn): ${formatClinicalTimestamp(obs.charttime)}`,
-                              `Storetime (filed): ${formatClinicalTimestamp(obs.storetime)}`,
-                              `Turnaround Delay: +${obs.reporting_delay_hours.toFixed(2)} hours`,
-                              isMaskedInOps
-                                ? `❌ CAUSALLY MASKED in Operational mode (Filed after query)`
-                                : `✔ Available to Operational Filter`,
-                            ],
-                          });
-                        }}
+                        onMouseEnter={(e) =>
+                          showTooltip(e, `${obs.analyte_name.toUpperCase()} Draw`, [
+                            `Charttime (drawn): ${formatClinicalTimestamp(obs.charttime)}`,
+                            `Storetime (filed): ${formatClinicalTimestamp(obs.storetime)}`,
+                            `Turnaround Delay: +${obs.reporting_delay_hours.toFixed(2)} hours`,
+                            isMaskedInOps
+                              ? `❌ CAUSALLY MASKED in Operational mode (Filed after query)`
+                              : `✔ Available to Operational Filter`,
+                          ])
+                        }
                         onMouseLeave={() => setHoveredPoint(null)}
                       />
                     )}
@@ -624,43 +475,18 @@ export default function PatientGraphs({
                 );
               })}
 
-              <text x="50" y={graphCHeight - 8} fill="var(--text-muted)" fontSize="11">
-                {axisStartLabel.slice(0, 10)}
-              </text>
-              <text x={svgWidth - 90} y={graphCHeight - 8} fill="var(--text-muted)" fontSize="11">
-                {axisEndLabel.slice(0, 10)}
-              </text>
+              <text x="50" y={graphCHeight - 8} fill={MUTED} fontSize="11">{axisStartLabel.slice(0, 10)}</text>
+              <text x={svgWidth - 90} y={graphCHeight - 8} fill={MUTED} fontSize="11">{axisEndLabel.slice(0, 10)}</text>
             </svg>
           </div>
         </div>
       )}
 
-      {/* Floating Tooltip */}
       {hoveredPoint && (
-        <div
-          style={{
-            position: "fixed",
-            left: hoveredPoint.x,
-            top: hoveredPoint.y,
-            transform: "translate(-50%, -100%)",
-            background: "rgba(10, 15, 29, 0.95)",
-            border: "1px solid var(--accent-cyan)",
-            borderRadius: "var(--radius-sm)",
-            padding: "8px 12px",
-            fontSize: 11,
-            pointerEvents: "none",
-            zIndex: 1000,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
-            maxWidth: 280,
-          }}
-        >
-          <div style={{ fontWeight: 700, color: "var(--accent-cyan)", marginBottom: 4 }}>
-            {hoveredPoint.title}
-          </div>
+        <div className="chart-tooltip" style={{ left: hoveredPoint.x, top: hoveredPoint.y }}>
+          <div className="chart-tooltip-title">{hoveredPoint.title}</div>
           {hoveredPoint.lines.map((l, i) => (
-            <div key={i} style={{ color: "var(--text-secondary)", fontSize: 10 }}>
-              {l}
-            </div>
+            <div key={i} className="chart-tooltip-line">{l}</div>
           ))}
         </div>
       )}

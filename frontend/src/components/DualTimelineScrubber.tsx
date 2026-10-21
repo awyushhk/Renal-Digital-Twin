@@ -108,53 +108,35 @@ export default function DualTimelineScrubber({
         </button>
       </div>
 
-      {/* Mode description & Semantics */}
-      <div style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.6 }}>
+      {/* Mode description */}
+      <div className="mode-desc">
         {mode === "OPERATIONAL" ? (
           <>
-            <span style={{ color: "var(--accent-cyan)", fontWeight: 600 }}>Operational:</span>{" "}
+            <span className="op">Operational:</span>{" "}
             use only results reported by the selected hospital-clock time.
           </>
         ) : (
           <>
-            <span style={{ color: "var(--accent-violet)", fontWeight: 600 }}>Biological:</span>{" "}
+            <span className="bio">Biological:</span>{" "}
             use samples collected by that time; intended for retrospective comparison.
           </>
         )}
       </div>
 
-      {/* Patient Timeline Span & Jump Controls */}
+      {/* Patient timeline span & jump controls */}
       {patientId && firstObservationTime && latestObservationTime && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 8,
-            padding: "8px 12px",
-            background: "rgba(255, 255, 255, 0.03)",
-            borderRadius: "var(--radius-sm)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            fontSize: 11,
-          }}
-        >
+        <div className="timeline-span-row">
           <div>
-            <span style={{ color: "var(--text-muted)" }}>{totalObservationsCount} records: </span>
-            <span style={{ color: "var(--accent-cyan)", fontFamily: "monospace" }}>
-              {formatClinicalTimestamp(firstObservationTime)}
-            </span>
-            <span style={{ color: "var(--text-muted)" }}> → </span>
-            <span style={{ color: "var(--accent-teal)", fontFamily: "monospace" }}>
-              {formatClinicalTimestamp(latestObservationTime)}
-            </span>
+            <span className="muted">{totalObservationsCount} records: </span>
+            <span className="from">{formatClinicalTimestamp(firstObservationTime)}</span>
+            <span className="muted"> → </span>
+            <span className="to">{formatClinicalTimestamp(latestObservationTime)}</span>
           </div>
-          <div style={{ display: "flex", gap: 6 }}>
+          <div className="timeline-jumps">
             <button
               id="jump-first-btn"
               type="button"
               className="filter-btn"
-              style={{ fontSize: 10, padding: "2px 8px" }}
               onClick={jumpToFirst}
               title="Jump to patient's first eligible laboratory observation"
             >
@@ -164,7 +146,6 @@ export default function DualTimelineScrubber({
               id="jump-mid-btn"
               type="button"
               className="filter-btn"
-              style={{ fontSize: 10, padding: "2px 8px" }}
               onClick={jumpToMid}
               title="Jump to midpoint of patient's trajectory"
             >
@@ -174,7 +155,6 @@ export default function DualTimelineScrubber({
               id="jump-latest-btn"
               type="button"
               className="filter-btn"
-              style={{ fontSize: 10, padding: "2px 8px" }}
               onClick={jumpToLatest}
               title="Jump to patient's latest eligible laboratory observation"
             >
@@ -190,7 +170,7 @@ export default function DualTimelineScrubber({
 
       {/* DateTime picker and execute button */}
       <div className="timeline-datetime-row">
-        <div className="input-group" style={{ flex: 1 }}>
+        <div className="input-group" style={{ flex: 1, minWidth: 220 }}>
           <label htmlFor="query-datetime-input" className="input-label">
             Query time (hospital local clock)
           </label>
