@@ -1,4 +1,4 @@
-# Nephron-Aware Renal Digital Twin
+# Renal Latent-State Estimation and Forecasting Framework
 
 > An irregular-time physiological modeling and machine-learning framework for renal laboratory trajectory representation, latent-state estimation, and short-horizon biomarker forecasting using MIMIC-IV 3.1 clinical observational data.
 
@@ -16,7 +16,7 @@
 
 Clinical laboratory measurements are inherently irregular. Patients may have several measurements within a single day, followed by long intervals without additional observations. Converting these histories into uniform daily sequences can introduce artificial time steps, discard temporal information, and contaminate historical predictions with information that would not have been available at the time.
 
-The **Nephron-Aware Renal Digital Twin** addresses these challenges through three integrated modules:
+The **Renal Latent-State Estimation and Forecasting Framework** addresses these challenges through three integrated modules:
 
 - **Module 1 — Data Foundation and Temporal Representation:** Audits MIMIC-IV, extracts a bounded renal laboratory cohort, resolves duplicate and conflicting measurements, and establishes separate biological and operational timelines.
 - **Module 2 — Physiology-Informed Latent-State Engine:** Estimates three latent renal-associated signals from irregular laboratory observations using a continuous-discrete Ornstein–Uhlenbeck (OU) state-space model.
@@ -635,13 +635,13 @@ These are proposed research directions, not completed functionality. Future mode
 
 ## 15. Project Summary
 
-The Nephron-Aware Renal Digital Twin integrates an auditable irregular-time data pipeline, a continuous-discrete latent-state model, patient-specific biomarker forecasting, and an interactive interface.
+The Renal Latent-State Estimation and Forecasting Framework integrates an auditable irregular-time data pipeline, a continuous-discrete latent-state model, patient-specific biomarker forecasting, and an interactive interface.
 
 Its primary contribution is the implementation and evaluation of a complete research workflow that explicitly addresses temporal representation, information availability, state estimation, and forecast uncertainty.
 
 The empirical results show both the strengths and limitations of the approach: irregular-time state estimation and forecasting are implemented, but the OU model does not consistently outperform causal baselines, and clinical validity has not been established.
 
-**Project:** Nephron-Aware Renal Digital Twin  
+**Project:** Renal Latent-State Estimation and Forecasting Framework  
 **Research focus:** Irregular-time renal laboratory representation, latent-state estimation, and patient-specific biomarker forecasting  
 **Data source:** MIMIC-IV 3.1  
 **Status:** Research prototype; clinical validation not established
